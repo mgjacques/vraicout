@@ -1,11 +1,6 @@
 /** Texts shared by every tool: warning, amounts, tax and today's dollars. */
 export const common = {
   'app.footer': 'Vos chiffres restent sur votre appareil. Vous pouvez les effacer depuis le menu.',
-  'access.title': 'Accès réservé',
-  'access.lede': 'Le site n’est pas encore public. Entrez le mot de passe pour le consulter.',
-  'access.label': 'Mot de passe',
-  'access.submit': 'Entrer',
-  'access.wrong': 'Ce n’est pas le bon mot de passe.',
   'footer.contact': 'Une question ou un commentaire ? Écrivez à :',
   'warning.title': 'Ce n’est pas un conseil',
   'warning.body':

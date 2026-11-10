@@ -9,10 +9,9 @@ describe('data transfer', () => {
     expect(exportCode()).toBe('');
   });
 
-  it('carries every kept value, accents included, but not the password check', () => {
+  it('carries every kept value, accents included', () => {
     localStorage.setItem('vraicout.split', '{"v":1,"data":{"names":["Zoé","Éloi"]}}');
     localStorage.setItem('vraicout.theme', 'dark');
-    localStorage.setItem('vraicout.access', '{"v":1,"data":"hash"}');
     localStorage.setItem('other-site', 'x');
 
     const code = exportCode();
@@ -40,19 +39,16 @@ describe('data transfer', () => {
     expect(readCode(encode({ app: 'vraicout', v: 1, keys: { theme: 3 } }))).toBeNull();
     expect(readCode(encode({ app: 'vraicout', v: 1, keys: [] }))).toBeNull();
     expect(readCode(encode({ app: 'vraicout', v: 1, keys: {} }))).toBeNull();
-    expect(readCode(encode({ app: 'vraicout', v: 1, keys: { access: 'x' } }))).toBeNull();
   });
 
-  it('replaces what is kept, and leaves the password check and other sites alone', () => {
+  it('replaces what is kept, and leaves other sites alone', () => {
     localStorage.setItem('vraicout.fees', 'old');
     localStorage.setItem('vraicout.theme', 'light');
-    localStorage.setItem('vraicout.access', 'hash');
     localStorage.setItem('other-site', 'x');
 
     expect(applyCode({ theme: 'dark', split: 'new' })).toBe(true);
 
     expect(readKept()).toEqual({ theme: 'dark', split: 'new' });
-    expect(localStorage.getItem('vraicout.access')).toBe('hash');
     expect(localStorage.getItem('other-site')).toBe('x');
   });
 

@@ -3124,16 +3124,3 @@ a.support-link:focus-visible {
   background: var(--bg);
   font-weight: 700;
 }
-
-/* The password screen, while the app is not public. */
-.access-gate {
-  padding-top: 4rem;
-}
-.access-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-}
-.access-row input {
-  flex: 1 1 14rem;
-}

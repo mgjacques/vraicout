@@ -9,12 +9,6 @@ import { PREFIX } from './device-storage';
 const FORMAT = 1;
 const APP = 'vraicout';
 
-/**
- * Not carried over: the pre-launch password check. A code passed to someone else would
- * otherwise open the site for them.
- */
-const LOCAL_ONLY = new Set(['access']);
-
 interface Payload {
   app: typeof APP;
   v: number;
@@ -31,7 +25,7 @@ export function readKept(storage: Storage = localStorage): Record<string, string
       if (!full?.startsWith(PREFIX)) continue;
       const key = full.slice(PREFIX.length);
       const value = storage.getItem(full);
-      if (!LOCAL_ONLY.has(key) && value !== null) kept[key] = value;
+      if (value !== null) kept[key] = value;
     }
   } catch {
     // Storage blocked: nothing to export.
@@ -53,7 +47,7 @@ export function readCode(code: string): Record<string, string> | null {
   try {
     const parsed: unknown = JSON.parse(fromBase64(code.replace(/\s+/g, '')));
     if (!isPayload(parsed)) return null;
-    const entries = Object.entries(parsed.keys).filter(([key]) => !LOCAL_ONLY.has(key));
+    const entries = Object.entries(parsed.keys);
     return entries.length > 0 ? Object.fromEntries(entries) : null;
   } catch {
     // Not base64, not JSON: not a code.
