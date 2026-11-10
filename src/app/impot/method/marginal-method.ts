@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { SOURCE_URL } from '../../shared/contact';
+import { modelUrl } from '../../shared/contact';
 import {
   DocSection,
   DocSections,
@@ -114,7 +114,7 @@ const SECTIONS: readonly DocSection[] = [
       {
         kind: 'link',
         text: 'marginal.method.more.model',
-        url: `${SOURCE_URL}/blob/develop/docs/modele-de-calcul-impot.md`,
+        url: modelUrl('modele-de-calcul-impot.md'),
       },
     ],
   },

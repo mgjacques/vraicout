@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { SOURCE_URL } from '../../shared/contact';
+import { modelUrl } from '../../shared/contact';
 import { DocSection, DocSections, docText as text } from '../../shared/doc-sections/doc-sections';
 import { I18nService } from '../../shared/i18n/i18n.service';
 import { ToolBreadcrumb } from '../../shared/tool-breadcrumb/tool-breadcrumb';
@@ -74,7 +74,7 @@ const SECTIONS: readonly DocSection[] = [
       {
         kind: 'link',
         text: 'split.method.more.model',
-        url: `${SOURCE_URL}/blob/develop/docs/modele-de-calcul-partage.md`,
+        url: modelUrl('modele-de-calcul-partage.md'),
       },
     ],
   },

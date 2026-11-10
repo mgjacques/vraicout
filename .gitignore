@@ -47,6 +47,8 @@ Thumbs.db
 # Clé PrimeUI : locale dans .env, générée dans prime-license.ts
 .env
 /src/app/prime-license.ts
+# Branche bâtie, générée par scripts/build-branch.mjs
+/src/app/shared/seo/build-branch.ts
 
 # Claude Code : configuration locale (serveur de dev, réglages), sauf les skills du projet
 /.claude/*

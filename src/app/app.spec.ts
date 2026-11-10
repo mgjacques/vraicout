@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { appConfig } from './app.config';
 import { RESOURCE_SECTIONS } from './ressources/resources.data';
-import { SOURCE_URL } from './shared/contact';
+import { modelUrl, SOURCE_URL } from './shared/contact';
 import { SiteFooter } from './shell/site-footer/site-footer';
 import { fr } from './shared/i18n/fr';
 import { ScenarioStore } from './assurance/state/scenario.store';
@@ -284,9 +284,7 @@ describe('App', () => {
     expect(page.querySelector('#calcul .doc-symbols')?.textContent).toContain(
       fr['insurance.method.symbol.gap'],
     );
-    expect(
-      page.querySelector(`a[href="${SOURCE_URL}/blob/develop/docs/modele-de-calcul.md"]`),
-    ).not.toBeNull();
+    expect(page.querySelector(`a[href=\"${modelUrl('modele-de-calcul.md')}\"]`)).not.toBeNull();
   });
 
   it('shows the mortgage method without any figures entered, each rule with its source', async () => {
@@ -305,9 +303,7 @@ describe('App', () => {
     expect(page.querySelector('#reperes-title')?.textContent).toContain(fr['method.ref.title']);
     expect(page.querySelectorAll('#reperes .doc-source a[href^="https://"]').length).toBe(4);
     expect(
-      page.querySelector(
-        `a[href="${SOURCE_URL}/blob/develop/docs/modele-de-calcul-hypotheque.md"]`,
-      ),
+      page.querySelector(`a[href=\"${modelUrl('modele-de-calcul-hypotheque.md')}\"]`),
     ).not.toBeNull();
     // The formulas sit right under the Interest Act source, which stays under its paragraph.
     expect(page.querySelector('#calcul .doc-source + p + .doc-math')).not.toBeNull();
@@ -331,7 +327,7 @@ describe('App', () => {
     expect(page.querySelector('#reperes-title')?.textContent).toContain(fr['method.ref.title']);
     expect(page.querySelectorAll('#reperes .doc-source a[href^="https://"]').length).toBe(1);
     expect(
-      page.querySelector(`a[href="${SOURCE_URL}/blob/develop/docs/modele-de-calcul-partage.md"]`),
+      page.querySelector(`a[href=\"${modelUrl('modele-de-calcul-partage.md')}\"]`),
     ).not.toBeNull();
   });
 
@@ -351,7 +347,7 @@ describe('App', () => {
     expect(page.querySelector('#reperes-title')?.textContent).toContain(fr['method.ref.title']);
     expect(page.querySelectorAll('#reperes .doc-source a[href^="https://"]').length).toBe(1);
     expect(
-      page.querySelector(`a[href="${SOURCE_URL}/blob/develop/docs/modele-de-calcul-heures.md"]`),
+      page.querySelector(`a[href=\"${modelUrl('modele-de-calcul-heures.md')}\"]`),
     ).not.toBeNull();
   });
 
@@ -423,7 +419,7 @@ describe('App', () => {
     expect(page.querySelectorAll('#calcul .doc-math math').length).toBe(3);
     expect(page.querySelectorAll('#calcul .doc-symbols dt').length).toBe(13);
     expect(
-      page.querySelector(`a[href="${SOURCE_URL}/blob/develop/docs/modele-de-calcul-impot.md"]`),
+      page.querySelector(`a[href=\"${modelUrl('modele-de-calcul-impot.md')}\"]`),
     ).not.toBeNull();
   });
 
@@ -447,7 +443,7 @@ describe('App', () => {
       fr['savings.method.symbol.m'],
     );
     expect(
-      page.querySelector(`a[href="${SOURCE_URL}/blob/develop/docs/modele-de-calcul-epargne.md"]`),
+      page.querySelector(`a[href=\"${modelUrl('modele-de-calcul-epargne.md')}\"]`),
     ).not.toBeNull();
   });
 
