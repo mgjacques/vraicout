@@ -11,8 +11,7 @@ interface Saved {
   draft: ScenarioForm;
   committed: ScenarioInput | null;
   illustrative: boolean;
-  /** Older saves have none: they reopen on the first step. */
-  profileStep?: number;
+  profileStep: number;
 }
 
 /**
@@ -23,8 +22,8 @@ interface Saved {
 @Injectable({ providedIn: 'root' })
 export class ScenarioStore {
   private readonly saved = loadSaved<Saved>(SAVE_KEY);
-  readonly draft = signal<ScenarioForm>(withInForce(this.saved?.draft) ?? blankForm());
-  readonly committed = signal<ScenarioInput | null>(withInForce(this.saved?.committed) ?? null);
+  readonly draft = signal<ScenarioForm>(this.saved?.draft ?? blankForm());
+  readonly committed = signal<ScenarioInput | null>(this.saved?.committed ?? null);
   readonly illustrative = signal(this.saved?.illustrative ?? false);
   /** The profile step the person was on, 1-based, so leaving and coming back resumes there. */
   readonly profileStep = signal(this.saved?.profileStep ?? 1);
@@ -104,17 +103,4 @@ export class ScenarioStore {
     this.profileStep.set(1);
     this.chosenAge.set(null);
   }
-}
-
-/**
- * Saves from before the « already in force » question have none. Only a contract already in
- * force has a cash value today, so one entered says the answer.
- */
-function withInForce<T extends ScenarioForm | ScenarioInput>(
-  saved: T | null | undefined,
-): T | null {
-  if (!saved) return null;
-  if (typeof saved.permanent.inForce === 'boolean') return saved;
-  const inForce = (saved.permanent.cashValueNow ?? 0) > 0;
-  return { ...saved, permanent: { ...saved.permanent, inForce } } as T;
 }

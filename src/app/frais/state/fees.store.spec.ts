@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { save } from '../../shared/storage/device-storage';
-import { defaultFeesForm, toFeesInput } from '../engine/blank';
+import { defaultFeesForm } from '../engine/blank';
 import { FeesStore } from './fees.store';
 
 describe('FeesStore', () => {
@@ -47,11 +46,6 @@ describe('FeesStore', () => {
     expect(next.profileStep()).toBe(3);
     expect(next.started()).toBe(true);
     expect(next.finished()).toBe(false);
-  });
-
-  it('opens the results for a save from before the steps', () => {
-    save('frais', { draft: defaultFeesForm(), committed: toFeesInput(defaultFeesForm()) });
-    expect(TestBed.inject(FeesStore).finished()).toBe(true);
   });
 
   it('goes back to the starting figures and the introduction on reset', () => {

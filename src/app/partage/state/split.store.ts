@@ -17,8 +17,7 @@ interface Saved {
  */
 @Injectable({ providedIn: 'root' })
 export class SplitStore {
-  // A save from the first version, with a gross and a net per person, is not read.
-  private readonly saved = currentShape(loadSaved<Saved>(SAVE_KEY));
+  private readonly saved = loadSaved<Saved>(SAVE_KEY);
   readonly draft = signal<SplitForm>(this.saved?.draft ?? defaultSplitForm());
   readonly committed = signal<SplitInput>(
     this.saved?.committed ?? toSplitInput(defaultSplitForm()),
@@ -40,8 +39,4 @@ export class SplitStore {
   reset(): void {
     this.edit(defaultSplitForm());
   }
-}
-
-function currentShape(saved: Saved | null): Saved | null {
-  return saved && 'salary' in saved.draft.people.p1 ? saved : null;
 }

@@ -64,9 +64,6 @@ export const routes: Routes = [
     loadComponent: () => import('./donnees/transfer-page').then((m) => m.TransferPage),
     title: 'title.transfer' satisfies MessageKey,
   },
-  // Addresses from before the tools were split.
-  { path: 'profil', redirectTo: 'assurance/profil' },
-  { path: 'comparaison', redirectTo: 'assurance/comparaison' },
   {
     path: '**',
     loadComponent: () => import('./not-found/not-found-page').then((m) => m.NotFoundPage),

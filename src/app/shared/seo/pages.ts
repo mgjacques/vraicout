@@ -11,8 +11,8 @@ import { SITE_URL } from './site';
 export interface SitePage {
   /** The address, from the root, without a trailing slash: `/`, `/frais/methode`. */
   path: string;
-  /** The route's title, the same key as in the routes; none for an address that only redirects. */
-  title?: MessageKey;
+  /** The route's title, the same key as in the routes. */
+  title: MessageKey;
   /** Set only for a page that search engines may list: it goes in the sitemap and gets a canonical link. */
   description?: MessageKey;
   /** The title of a shared link, when the tab title says too little (« Avant de commencer »). */
@@ -92,10 +92,6 @@ export const SITE_PAGES: readonly SitePage[] = [
   { path: '/ressources', title: 'resources.title', description: 'resources.lede' },
   { path: '/confidentialite', title: 'title.privacy', description: 'privacy.description' },
   { path: '/donnees', title: 'title.transfer', description: 'transfer.lede' },
-
-  // Addresses from before the tools were split: the router redirects them.
-  { path: '/profil' },
-  { path: '/comparaison' },
 ];
 
 /** What goes in a page's `<head>`, in plain text. */
@@ -128,7 +124,7 @@ export function findPage(url: string): SitePage | undefined {
  * listed without a description, gets the home page's description and no canonical link.
  */
 export function pageHead(page: SitePage | undefined, t: (key: MessageKey) => string): PageHead {
-  const title = documentTitle(page?.title ? t(page.title) : undefined);
+  const title = documentTitle(page ? t(page.title) : undefined);
   const shareTitle = page?.shareTitle ? t(page.shareTitle) : page?.path === '/' ? APP_NAME : title;
   return {
     title,

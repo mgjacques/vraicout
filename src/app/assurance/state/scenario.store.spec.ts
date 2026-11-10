@@ -62,20 +62,4 @@ describe('ScenarioStore', () => {
     expect(store.draftReady()).toBe(false);
     expect(store.started()).toBe(false);
   });
-
-  it('reads a save from before the « already in force » question by its cash value', () => {
-    const store = TestBed.inject(ScenarioStore);
-    store.useExample();
-    TestBed.tick();
-    const raw = JSON.parse(localStorage.getItem('vraicout.assurance')!);
-    delete raw.data.draft.permanent.inForce;
-    delete raw.data.committed.permanent.inForce;
-    localStorage.setItem('vraicout.assurance', JSON.stringify(raw));
-
-    TestBed.resetTestingModule();
-    const next = TestBed.inject(ScenarioStore);
-    // The example's contract has 1 000 $ of cash value today: it was already in force.
-    expect(next.draft().permanent.inForce).toBe(true);
-    expect(next.committed()?.permanent.inForce).toBe(true);
-  });
 });

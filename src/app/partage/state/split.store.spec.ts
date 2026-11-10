@@ -44,18 +44,4 @@ describe('SplitStore', () => {
     expect(store.draft()).toEqual(defaultSplitForm());
     expect(store.committed()).toEqual(toSplitInput(defaultSplitForm()));
   });
-
-  it('ignores a save from the first version, with a gross and a net', () => {
-    localStorage.setItem(
-      'vraicout.partage',
-      JSON.stringify({
-        v: 1,
-        data: {
-          draft: { people: { p1: { gross: 1, net: null } }, bill: null },
-          committed: {},
-        },
-      }),
-    );
-    expect(TestBed.inject(SplitStore).draft()).toEqual(defaultSplitForm());
-  });
 });

@@ -132,9 +132,9 @@ describe('App', () => {
     expect(page.querySelector('.checklist')?.textContent).toContain(fr['welcome.check.parents']);
   });
 
-  it('refuses the comparison until a profile is committed, old address included', async () => {
+  it('refuses the comparison until a profile is committed', async () => {
     const harness = await RouterTestingHarness.create();
-    await harness.navigateByUrl('/comparaison');
+    await harness.navigateByUrl('/assurance/comparaison');
     expect(TestBed.inject(Router).url).toBe('/assurance/profil');
     expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toContain(
       fr['profile.title'],

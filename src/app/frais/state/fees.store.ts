@@ -9,9 +9,8 @@ const SAVE_KEY = 'frais';
 interface Saved {
   draft: FeesForm;
   committed: FeesInput;
-  /** Older saves have none: they predate the steps and already showed the results. */
-  finished?: boolean;
-  profileStep?: number;
+  finished: boolean;
+  profileStep: number;
 }
 
 /**
@@ -25,7 +24,7 @@ export class FeesStore {
   readonly draft = signal<FeesForm>(this.saved?.draft ?? defaultFeesForm());
   readonly committed = signal<FeesInput>(this.saved?.committed ?? toFeesInput(defaultFeesForm()));
   /** The person went through every step: the results open directly from now on. */
-  readonly finished = signal(this.saved ? (this.saved.finished ?? true) : false);
+  readonly finished = signal(this.saved?.finished ?? false);
   /** The step the person was on, 1-based, so leaving and coming back resumes there. */
   readonly profileStep = signal(this.saved?.profileStep ?? 1);
   readonly missing = computed(() => missingFeesFields(this.draft()));
