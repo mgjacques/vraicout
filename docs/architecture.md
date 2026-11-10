@@ -6,6 +6,8 @@ Application Angular 22 entièrement statique. Tout le calcul se fait dans le nav
 
 L'application regroupe plusieurs **outils**. Chacun vit sous son propre préfixe d'adresse et dans son propre dossier, dans son propre morceau de code (`loadChildren`). Une fois la première page affichée, le routeur précharge les autres outils (`PreloadAllModules`, dans `app.config.ts`) : ce sont des fichiers du site lui-même, et on ouvre ensuite un outil sans attente.
 
+Les textes suivent le même découpage. Le paquet de départ ne contient que ceux de l'en-tête, de l'accueil et des petites pages (`common`, `home`, `privacy`, `resources`, `transfer`). Le catalogue de chaque outil se charge avec sa route (`withCatalogs`, `shared/i18n/catalogs.ts`) ; la page Sources, qui affiche la date de mise à jour de chaque outil, les charge tous. `fr.ts` garde la fusion complète, pour les clés typées, les tests et `scripts/site-files.mjs`. Les tests chargent tous les catalogues au départ (`src/test-setup.ts`).
+
 ```
 src/app/
   app.routes.ts       routes de premier niveau, TitleStrategy
@@ -16,7 +18,8 @@ src/app/
                       limits.ts (Limit, clamp, finite, et cents, whole, fromPercent, toPercent pour les formulaires)
     i18n/             catalogue : fr/common.ts, fr/home.ts, fr/assurance.ts, fr/fees.ts, fr/mortgage.ts,
                       fr/split.ts, fr/hours.ts, fr/spending.ts, fr/savings.ts, fr/marginal.ts, fr/privacy.ts,
-                      fr/resources.ts, fr/transfer.ts
+                      fr/resources.ts, fr/transfer.ts ; catalogs.ts : ce qui est chargé au départ et quand
+                      se charge le catalogue de chaque outil
     figure/           montant cliquable et bulle de calcul
     number-input/     champs numériques (NumberField, NumberInput), money-input/ pour les dollars
     rich-text/        gras et italique (`**…**`, `*…*`) des textes du catalogue
@@ -55,7 +58,7 @@ src/app/
                       remplacé par une version vide au build de production (fileReplacements)
 ```
 
-**Ajouter un outil** : un dossier `src/app/<outil>/` avec son `<outil>.routes.ts`, une entrée `loadChildren` dans `app.routes.ts`, une entrée dans `TOOLS`, et un fichier `shared/i18n/fr/<outil>.ts` ajouté à la fusion de `fr.ts`. Ce que l'outil garde sur l'appareil s'ajoute aussi à la page de confidentialité (`shared/i18n/fr/privacy.ts`, section « Données gardées dans votre navigateur »). Un outil n'importe jamais un autre outil : ce qui doit être partagé passe dans `shared/`.
+**Ajouter un outil** : un dossier `src/app/<outil>/` avec son `<outil>.routes.ts`, une entrée `loadChildren` dans `app.routes.ts`, une entrée dans `TOOLS`, et un fichier `shared/i18n/fr/<outil>.ts` ajouté à la fusion de `fr.ts` et à `TOOL_CATALOGS` (`shared/i18n/catalogs.ts`). Son entrée dans `app.routes.ts` passe par `withCatalogs(['<catalogue>'], …)` : ses textes se chargent avec sa route, pas avec la page d'accueil. Ce que l'outil garde sur l'appareil s'ajoute aussi à la page de confidentialité (`shared/i18n/fr/privacy.ts`, section « Données gardées dans votre navigateur »). Un outil n'importe jamais un autre outil : ce qui doit être partagé passe dans `shared/`.
 
 ## Pages et parcours
 
@@ -377,6 +380,6 @@ Toute chaîne visible passe par `I18nService.t(clé, paramètres)`. Les clés so
 | `shared/number-input/`, `shared/money-input/`, `shared/rich-text/`, `shell/mobile-menu/` | Champs numériques, gras et italique des textes, menu mobile.                                                                                                                                                                                                                               |
 | `app.spec.ts`                                                                            | Accueil et liste des outils, garde, introductions accessibles depuis les résultats, liens sous le titre, fil d'Ariane, sommaire des résultats, page des adresses inconnues, validation de la première étape du profil, page `/sources` et méthodes des outils lisibles sans chiffres.      |
 | `ressources/resources.data.spec.ts`                                                      | Ressources : aucune section vide, aucune entrée en double, liens en `https` et sans site d'affiliation.                                                                                                                                                                                    |
-| `shared/i18n/i18n.spec.ts`                                                               | Le catalogue anglais a exactement les clés du français ; aucune espace ordinaire entre un nombre et son unité ou dans les milliers.                                                                                                                                                        |
+| `shared/i18n/i18n.spec.ts`                                                               | Le catalogue anglais a exactement les clés du français ; aucune espace ordinaire entre un nombre et son unité ou dans les milliers ; le découpage par outil (`catalogs.ts`) ne perd aucune clé.                                                                                            |
 
 Le parcours a aussi été vérifié dans un vrai navigateur (Playwright), mais ces scripts ne sont pas encore dans le dépôt.

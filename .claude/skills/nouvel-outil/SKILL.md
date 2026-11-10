@@ -50,7 +50,7 @@ Copier `heures/state/hours.store.ts` : `draft` (le formulaire tel que tapé) et 
 ## 4. Page et routes
 
 - `<outil>.routes.ts` : `export const <OUTIL>_ROUTES: Routes`, avec `title: 'title.<préfixe>' satisfies MessageKey`.
-- `src/app/app.routes.ts` : une entrée `loadChildren` avant `confidentialite`.
+- `src/app/app.routes.ts` : une entrée `loadChildren: withCatalogs(['<préfixe>'], () => import(…))` avant `confidentialite`, pour que les textes de l'outil se chargent avec sa route.
 - `src/app/shared/seo/pages.ts` : chaque adresse de l'outil dans `SITE_PAGES`, avec le même titre que sa route. L'accueil de l'outil et sa page `/methode` ont une `description` (elles vont dans le sitemap) et l'accueil un `shareTitle` (`tool.<préfixe>.title`) ; les pages qui dépendent des chiffres entrés (profil, comparaison) n'en ont pas. Un test refuse une route absente de la liste.
 - Les composants partagés, sans réinventer :
   - les champs `app-money-input` (dollars) et `app-number-input` (%, ans, heures), avec les bornes lues dans `limits.ts` ; les setters arrondissent et bornent avec `cents`, `whole` et `fromPercent` (`shared/engine/limits.ts`), sans en écrire de copie locale ;
@@ -72,7 +72,7 @@ Copier `heures/state/hours.store.ts` : `draft` (le formulaire tel que tapé) et 
 
 ## 6. Textes
 
-- `src/app/shared/i18n/fr/<préfixe>.ts` : `export const <préfixe> = { … }`, ajouté à la fusion dans `fr.ts`. Clés `<préfixe>.*` pour l'interface, `formula.<préfixe>.*` pour les formules, `title.<préfixe>` pour l'onglet. `en.ts` suit tout seul.
+- `src/app/shared/i18n/fr/<préfixe>.ts` : `export const <préfixe> = { … }`, ajouté à la fusion dans `fr.ts` et à `TOOL_CATALOGS` dans `catalogs.ts` (un test vérifie qu'aucun catalogue n'est oublié). Clés `<préfixe>.*` pour l'interface, `formula.<préfixe>.*` pour les formules, `title.<préfixe>` pour l'onglet. `en.ts` suit tout seul.
 - Suivre `docs/redaction.md` à la lettre : vouvoiement, ton neutre, concret avant abstrait, dire où trouver chaque chiffre (« au bas de votre talon de paie »), gras au plus une fois par texte.
 - Chaque champ dit s'il est obligatoire ou facultatif, et l'avis de champ manquant suit le modèle de `hours.form.incomplete`.
 - Une phrase de formule se termine par le résultat (`= {value}`), et chaque nombre vient d'un paramètre.
