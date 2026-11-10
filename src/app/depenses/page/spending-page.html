@@ -1,0 +1,189 @@
+<div class="wrap">
+  <header class="mast">
+    <app-tool-breadcrumb tool="/depenses" />
+    <h1>{{ i18n.t('spending.title') }}</h1>
+    <p class="lede">{{ i18n.t('spending.lede') }}</p>
+    <app-tool-links method="/depenses/methode" />
+  </header>
+
+  <app-warning variant="investing" />
+
+  <section class="block spending-form">
+    <h2>{{ i18n.t('spending.form.heading') }}</h2>
+    @if (store.missing().length) {
+      <p-message severity="error" class="spending-incomplete">{{
+        i18n.t('spending.form.incomplete', { fields: missingLabel() })
+      }}</p-message>
+    }
+
+    <div class="spending-fields">
+      <div class="group">
+        <label class="field" for="spending-amount"
+          >{{ i18n.t('spending.form.amount') }}<app-required-mark
+        /></label>
+        <app-money-input
+          inputId="spending-amount"
+          [ngModel]="form().amount"
+          (ngModelChange)="setAmount($event)"
+          [min]="limits.amount.min"
+          [max]="limits.amount.max"
+          [invalid]="invalid('amount')"
+          [maxFractionDigits]="2"
+        />
+        <p class="help">{{ i18n.t('spending.form.amountHelp') }}</p>
+
+        <div class="spending-cadence">
+          <div>
+            <label class="field" for="spending-cadence">{{
+              i18n.t('spending.form.cadence')
+            }}</label>
+            <p-select
+              inputId="spending-cadence"
+              [options]="cadenceOptions()"
+              optionLabel="label"
+              optionValue="value"
+              [ngModel]="form().cadence"
+              (ngModelChange)="setCadence($event)"
+              appendTo="body"
+            />
+          </div>
+          <div>
+            <label class="field" for="spending-count"
+              >{{ i18n.t('spending.form.count') }}<app-required-mark
+            /></label>
+            <app-number-input
+              inputId="spending-count"
+              [ngModel]="form().count"
+              (ngModelChange)="setCount($event)"
+              [min]="limits.count.min"
+              [max]="limits.count.max"
+              [invalid]="invalid('count')"
+              [maxFractionDigits]="0"
+            />
+          </div>
+        </div>
+        <p class="help">{{ timesPerYear() }}</p>
+      </div>
+
+      <div class="group">
+        <label class="field" for="spending-years"
+          >{{ i18n.t('spending.form.years') }}<app-required-mark
+        /></label>
+        <app-number-input
+          inputId="spending-years"
+          [ngModel]="form().years"
+          (ngModelChange)="setYears($event)"
+          [min]="limits.years.min"
+          [max]="limits.years.max"
+          [invalid]="invalid('years')"
+          [maxFractionDigits]="0"
+          [suffix]="years()"
+        />
+        <p class="help">{{ i18n.t('spending.form.yearsHelp') }}</p>
+
+        <div class="switch-row">
+          <p-toggleswitch
+            inputId="spending-price-growth"
+            [ngModel]="form().priceGrowth"
+            (ngModelChange)="setPriceGrowth($event)"
+          />
+          <label for="spending-price-growth">{{ i18n.t('spending.form.priceGrowth') }}</label>
+        </div>
+        <p class="help">{{ i18n.t('spending.form.priceGrowthHelp') }}</p>
+        @if (form().priceGrowth) {
+          <label class="field" for="spending-inflation">{{ i18n.t('drawer.inflation') }}</label>
+          <app-number-input
+            inputId="spending-inflation"
+            [ngModel]="inflationPercent()"
+            (ngModelChange)="setInflation($event)"
+            [min]="limits.inflationPercent.min"
+            [max]="limits.inflationPercent.max"
+            [maxFractionDigits]="2"
+            [suffix]="percent()"
+          />
+          <p class="help">{{ i18n.t('drawer.inflationHelp') }}</p>
+        }
+      </div>
+    </div>
+  </section>
+
+  <div class="block spending-row">
+    <div class="spending-side">
+      <fieldset class="group spending-invest">
+        <legend>{{ i18n.t('spending.form.invest') }}</legend>
+        <label class="field" for="spending-return"
+          >{{ i18n.t('spending.form.return') }}<app-required-mark
+        /></label>
+        <app-number-input
+          inputId="spending-return"
+          [ngModel]="returnPercent()"
+          (ngModelChange)="setReturn($event)"
+          [min]="limits.returnPercent.min"
+          [max]="limits.returnPercent.max"
+          [invalid]="invalid('return')"
+          [maxFractionDigits]="2"
+          [suffix]="percent()"
+        />
+        <p class="help"><app-rich-text [text]="i18n.t('spending.form.returnHelp')" /></p>
+      </fieldset>
+
+      <app-reset-button effect="spending.reset.effect" (confirmed)="store.reset()" />
+    </div>
+
+    <section class="spending-result" aria-live="polite">
+      <p class="kicker">{{ i18n.t('spending.result.kicker') }}</p>
+      <app-stale-results [stale]="store.missing().length > 0">
+        @let cost = result();
+        <article class="card spending-card">
+          <div class="metric">
+            <p class="lab">
+              {{
+                i18n.t(
+                  cost.input.priceGrowth && cost.input.inflation > 0
+                    ? 'spending.result.perYearGrowth'
+                    : 'spending.result.perYear'
+                )
+              }}
+            </p>
+            <p class="spending-big"><app-figure [money]="cost.perYear" /></p>
+            <p class="spending-line">
+              <span>{{ i18n.t('spending.result.total', { years: cost.input.years }) }}</span>
+              <app-figure [money]="cost.total" />
+            </p>
+          </div>
+          <div class="metric">
+            <p class="lab">{{ i18n.t('spending.result.opportunity') }}</p>
+            <p class="spending-big"><app-figure [money]="cost.invested" /></p>
+            <p class="help">{{ opportunityHelp() }}</p>
+            <p class="spending-line">
+              <span>{{ i18n.t('spending.result.interest') }}</span>
+              <app-figure [money]="cost.interest" />
+            </p>
+          </div>
+        </article>
+      </app-stale-results>
+    </section>
+  </div>
+
+  <section class="block">
+    <p class="kicker">{{ i18n.t('spending.learn.kicker') }}</p>
+    <h2>{{ i18n.t('spending.learn.heading') }}</h2>
+    <div class="lessons">
+      @for (lesson of lessons; track lesson.title) {
+        <article>
+          <h3>{{ i18n.t(lesson.title) }}</h3>
+          <p>{{ i18n.t(lesson.body) }}</p>
+        </article>
+      }
+    </div>
+    <p class="print-omit">
+      <a class="method-link" routerLink="/depenses/methode">{{ i18n.t('method.link') }}</a>
+    </p>
+  </section>
+
+  <app-page-notes>
+    <p>{{ i18n.t('app.footer') }}</p>
+  </app-page-notes>
+</div>
+
+<app-formula-popover />

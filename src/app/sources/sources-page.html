@@ -1,0 +1,19 @@
+<div class="wrap narrow">
+  <header class="mast">
+    <h1>{{ i18n.t('method.title') }}</h1>
+    <p class="lede">{{ i18n.t('method.index.lede') }}</p>
+  </header>
+
+  @for (tool of tools; track tool.path) {
+    <section class="doc-section">
+      <h2>
+        <a [routerLink]="tool.path + '/methode'">{{ i18n.t(tool.short) }}</a>
+      </h2>
+      @if (tool.methodUpdated; as updated) {
+        <p class="help">{{ i18n.t(updated) }}</p>
+      }
+    </section>
+  }
+
+  <app-doc-sections [sections]="authorities" />
+</div>

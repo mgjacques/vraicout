@@ -1,0 +1,72 @@
+<section class="block">
+  <p class="kicker">{{ heading() }}</p>
+  <div class="fee-cards">
+    @for (portfolio of cards(); track portfolio.id) {
+      <article [class]="cardClass(portfolio.id)">
+        <header>
+          <h2>{{ label(portfolio) }}</h2>
+          <p class="sub">{{ rate(portfolio) }}</p>
+        </header>
+        <div class="metric row-balance">
+          <p class="lab">{{ i18n.t('fees.summary.balance') }}</p>
+          <app-figure [money]="portfolio.balance" />
+          @if (taxed()) {
+            <p class="sub">
+              {{ i18n.t('fees.summary.inHand') }} <app-figure [money]="portfolio.inHand" />
+            </p>
+          }
+        </div>
+        <div class="metric row-fees">
+          <p class="lab">{{ i18n.t('fees.summary.feesPaid') }}</p>
+          <app-figure [money]="portfolio.feesPaid" />
+          <p class="sub">{{ i18n.t('fees.summary.feesPaidHelp') }}</p>
+        </div>
+        <div class="metric row-cost">
+          <p class="lab">{{ i18n.t('fees.summary.feeCost') }}</p>
+          <app-figure [money]="portfolio.feeCost" />
+          <p class="sub">{{ share(portfolio) }}</p>
+        </div>
+        @if (drawdown() && portfolio.income; as income) {
+          <div class="metric row-income">
+            <p class="lab">{{ i18n.t('fees.summary.income') }}</p>
+            <app-figure [money]="income" />
+            <p class="sub">{{ incomeNote() }}</p>
+            @if (portfolio.feesPaidDrawdown; as later) {
+              <p class="sub">
+                {{ i18n.t('fees.summary.feesLater') }} <app-figure [money]="later" />
+              </p>
+            }
+          </div>
+        }
+      </article>
+    }
+  </div>
+
+  <aside class="brief" aria-live="polite">
+    <h3>{{ i18n.t('fees.brief.title') }}</h3>
+    <ul>
+      <li>{{ i18n.t('fees.brief.deposited') }} <app-figure [money]="projection().deposited" /></li>
+      <li>{{ i18n.t('fees.brief.noFee') }} <app-figure [money]="projection().noFee.balance" /></li>
+      @if (projection().gap; as gap) {
+        <li>
+          {{ i18n.t('fees.brief.inHand', { label: cheaperLabel() }) }}
+          <app-figure [money]="gap.inHand" />
+        </li>
+        @if (gap.income; as income) {
+          <li>
+            {{ i18n.t('fees.brief.income', { label: cheaperLabel() }) }}
+            <app-figure [money]="income" />
+          </li>
+        }
+        @if (gap.incomeTotal; as total) {
+          <li>{{ i18n.t('fees.brief.incomeTotal') }} <app-figure [money]="total" /></li>
+        }
+      } @else {
+        <li>{{ i18n.t('fees.brief.same') }}</li>
+      }
+    </ul>
+    @if (projection().input.realDollars) {
+      <p class="help">{{ i18n.t('fees.brief.real') }}</p>
+    }
+  </aside>
+</section>

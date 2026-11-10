@@ -1,0 +1,92 @@
+<div class="wrap welcome">
+  <header class="mast">
+    <app-tool-breadcrumb tool="/assurance" page="intro" />
+    <h1>{{ i18n.t('welcome.title') }}</h1>
+    <p class="lede">{{ i18n.t('welcome.lede') }}</p>
+  </header>
+
+  <app-warning />
+
+  <section class="welcome-section" aria-labelledby="purpose-title">
+    <h2 id="purpose-title">{{ i18n.t('welcome.purpose.title') }}</h2>
+    <div class="welcome-card">
+      <p>{{ i18n.t('welcome.purpose.intro') }}</p>
+      <ul>
+        @for (key of purpose; track key) {
+          <li>{{ i18n.t(key) }}</li>
+        }
+      </ul>
+      <p class="help">{{ i18n.t('welcome.purpose.note') }}</p>
+    </div>
+  </section>
+
+  <section class="welcome-section audience" aria-labelledby="audience-title">
+    <h2 id="audience-title">{{ i18n.t('welcome.audience.title') }}</h2>
+    <div class="audience-cols">
+      <div class="welcome-card audience-col for">
+        <h3><i class="pi pi-check" aria-hidden="true"></i> {{ i18n.t('welcome.audience.for') }}</h3>
+        <ul>
+          @for (key of audienceFor; track key) {
+            <li>{{ i18n.t(key) }}</li>
+          }
+        </ul>
+      </div>
+      <div class="welcome-card audience-col less">
+        <h3>
+          <i class="pi pi-info-circle" aria-hidden="true"></i> {{ i18n.t('welcome.audience.less') }}
+        </h3>
+        <ul>
+          @for (key of audienceLess; track key) {
+            <li><app-rich-text [text]="i18n.t(key)" /></li>
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <ol class="points">
+    <li>
+      <h2>{{ i18n.t('welcome.point1.title') }}</h2>
+      <p>{{ i18n.t('welcome.point1.body') }}</p>
+    </li>
+    <li>
+      <h2>{{ i18n.t('welcome.point2.title') }}</h2>
+      <p><app-rich-text [text]="i18n.t('welcome.point2.body')" /></p>
+    </li>
+    <li>
+      <h2>{{ i18n.t('welcome.point3.title') }}</h2>
+      <p>{{ i18n.t('welcome.point3.body') }}</p>
+    </li>
+    <li>
+      <h2>{{ i18n.t('welcome.point4.title') }}</h2>
+      <p>{{ i18n.t('welcome.point4.body') }}</p>
+    </li>
+  </ol>
+
+  <section class="welcome-section" aria-labelledby="check-title">
+    <h2 id="check-title">{{ i18n.t('welcome.check.title') }}</h2>
+    <div class="welcome-card check">
+      <p>{{ i18n.t('welcome.check.intro') }}</p>
+      <ul class="checklist">
+        @for (key of checks; track key) {
+          <li>
+            <i class="pi pi-search" aria-hidden="true"></i> <span>{{ i18n.t(key) }}</span>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <div class="welcome-actions">
+    <p-button
+      [label]="i18n.t(hasResults() ? 'welcome.backToResults' : 'welcome.start')"
+      (onClick)="start()"
+    />
+    <p class="help private">
+      <i class="pi pi-lock" aria-hidden="true"></i> {{ i18n.t('welcome.private') }}
+    </p>
+    <p class="help">
+      <a class="method-link" routerLink="/assurance/methode">{{ i18n.t('method.link') }}</a>
+    </p>
+  </div>
+</div>

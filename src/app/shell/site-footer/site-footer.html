@@ -1,0 +1,85 @@
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div class="site-footer-brand">
+      <a class="brand" routerLink="/" [attr.aria-label]="i18n.t('shell.homeLink')"
+        ><app-brand-mark />{{ appName }}</a
+      >
+      <p>{{ i18n.t('footer.tagline') }}</p>
+      <ul class="site-footer-social">
+        <li>
+          <a
+            [href]="sourceUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            [attr.aria-label]="i18n.t('footer.github')"
+            [attr.title]="i18n.t('footer.github')"
+            ><i class="pi pi-github" aria-hidden="true"></i
+          ></a>
+        </li>
+        <li>
+          <a
+            [href]="mailto"
+            [attr.aria-label]="i18n.t('footer.email')"
+            [attr.title]="i18n.t('footer.email')"
+            ><i class="pi pi-envelope" aria-hidden="true"></i
+          ></a>
+        </li>
+      </ul>
+    </div>
+
+    @for (group of groups; track group.theme) {
+      <nav [attr.aria-labelledby]="'footer-' + group.anchor">
+        <h2 [id]="'footer-' + group.anchor">{{ i18n.t(group.label) }}</h2>
+        <ul>
+          @for (tool of group.tools; track tool.path) {
+            <li>
+              <a [routerLink]="tool.path">{{ i18n.t(tool.short) }}</a>
+            </li>
+          }
+        </ul>
+      </nav>
+    }
+
+    <nav aria-labelledby="footer-project">
+      <h2 id="footer-project">{{ i18n.t('footer.project') }}</h2>
+      <ul>
+        <li>
+          <a [href]="'/#' + aboutAnchor" (click)="goToAbout($event)">{{
+            i18n.t('shell.navAbout')
+          }}</a>
+        </li>
+        <li>
+          <a routerLink="/ressources">{{ i18n.t('shell.navResources') }}</a>
+        </li>
+        <li>
+          <a routerLink="/sources">{{ i18n.t('method.title') }}</a>
+        </li>
+        <li>
+          <a routerLink="/confidentialite">{{ i18n.t('footer.privacy') }}</a>
+        </li>
+        <li>
+          <a routerLink="/donnees">{{ i18n.t('title.transfer') }}</a>
+        </li>
+        <li>
+          <a [href]="sourceUrl" target="_blank" rel="noopener noreferrer"
+            >{{ i18n.t('footer.source') }} <i class="pi pi-external-link" aria-hidden="true"></i
+          ></a>
+        </li>
+        <li>
+          <a [href]="supportUrl" target="_blank" rel="noopener noreferrer"
+            >{{ i18n.t('support.label') }} <i class="pi pi-external-link" aria-hidden="true"></i
+          ></a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="site-footer-bottom">
+    <p class="site-footer-disclaimer">{{ i18n.t('footer.disclaimer') }}</p>
+    <p>
+      {{ i18n.t('footer.contact') }}
+      <a [href]="mailto">{{ address }}</a>
+    </p>
+    <p>{{ i18n.t('footer.license') }}</p>
+  </div>
+</footer>

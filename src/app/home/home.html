@@ -1,0 +1,80 @@
+<div class="wrap home">
+  <header class="hero">
+    <h1>{{ i18n.t('home.title') }}</h1>
+    <p class="lede">{{ i18n.t('home.lede') }}</p>
+    <div class="hero-actions">
+      <p-button
+        [label]="i18n.t('home.cta.tools')"
+        icon="pi pi-arrow-down"
+        iconPos="right"
+        (onClick)="scrollTo('outils')"
+      />
+      <p-button
+        [label]="i18n.t('home.cta.about')"
+        [text]="true"
+        (onClick)="scrollTo(aboutAnchor)"
+      />
+    </div>
+    <p class="help private">
+      <i class="pi pi-lock" aria-hidden="true"></i> {{ i18n.t('home.private') }}
+    </p>
+  </header>
+
+  <div id="outils">
+    @for (group of groups; track group.theme) {
+      <section
+        [id]="group.anchor"
+        class="home-tools"
+        [attr.aria-labelledby]="group.anchor + '-title'"
+      >
+        <h2 [id]="group.anchor + '-title'" class="home-tools-title">{{ i18n.t(group.label) }}</h2>
+        <ul class="tools">
+          @for (tool of group.tools; track tool.path) {
+            <li>
+              <a class="tool-card" [routerLink]="tool.path">
+                <i class="pi {{ tool.icon }}" aria-hidden="true"></i>
+                <h3>{{ i18n.t(tool.title) }}</h3>
+                <p>{{ i18n.t(tool.body) }}</p>
+                <span class="tool-open"
+                  >{{ i18n.t('home.open') }} <i class="pi pi-arrow-right" aria-hidden="true"></i
+                ></span>
+              </a>
+            </li>
+          }
+        </ul>
+      </section>
+    }
+    <p class="help home-more">{{ i18n.t('home.more') }}</p>
+  </div>
+
+  <section [id]="aboutAnchor" class="block about" aria-labelledby="a-propos-title">
+    <h2 id="a-propos-title">{{ i18n.t('about.title') }}</h2>
+    <p class="about-text">{{ i18n.t('about.why') }}</p>
+
+    <div class="about-principles">
+      @for (principle of principles; track principle.title) {
+        <article>
+          <i class="pi {{ principle.icon }}" aria-hidden="true"></i>
+          <div>
+            <h3>{{ i18n.t(principle.title) }}</h3>
+            <p><app-rich-text [text]="i18n.t(principle.body)" /></p>
+            @if (principle.link; as link) {
+              <p>
+                <a [href]="link.href" target="_blank" rel="noopener noreferrer">{{
+                  i18n.t(link.label)
+                }}</a>
+              </p>
+            }
+          </div>
+        </article>
+      }
+    </div>
+
+    <p class="about-text help">
+      {{ i18n.t('about.contact') }}
+      <a [href]="supportUrl" target="_blank" rel="noopener noreferrer">{{
+        i18n.t('support.label')
+      }}</a>
+    </p>
+  </section>
+</div>

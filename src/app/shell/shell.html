@@ -1,0 +1,56 @@
+<header class="app-bar">
+  <div class="brand-group">
+    <a class="brand" routerLink="/" [attr.aria-label]="i18n.t('shell.homeLink')"
+      ><app-brand-mark />{{ appName }}</a
+    >
+    @if (!compact()) {
+      <app-theme-toggle />
+    }
+  </div>
+  @if (compact()) {
+    <div class="bar-end">
+      <span class="bar-support"><app-support-link /></span>
+      <button
+        type="button"
+        class="menu-toggle"
+        aria-haspopup="dialog"
+        [attr.aria-expanded]="menuOpen()"
+        [attr.aria-label]="i18n.t('shell.menuOpen')"
+        (click)="menuOpen.set(true)"
+      >
+        <i class="pi pi-bars" aria-hidden="true"></i>
+      </button>
+    </div>
+  } @else {
+    <div class="bar-end">
+      <nav [attr.aria-label]="i18n.t('shell.nav')">
+        <a
+          routerLink="/"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          ariaCurrentWhenActive="page"
+          >{{ i18n.t('shell.navHome') }}</a
+        >
+        @for (group of groups; track group.theme) {
+          <app-tools-menu [group]="group" />
+        }
+        <a routerLink="/ressources" routerLinkActive="active" ariaCurrentWhenActive="page">{{
+          i18n.t('shell.navResources')
+        }}</a>
+        <a [href]="'/#' + aboutAnchor" (click)="goToAbout($event)">{{
+          i18n.t('shell.navAbout')
+        }}</a>
+      </nav>
+      <app-support-link />
+      <app-data-menu />
+    </div>
+  }
+</header>
+
+<!-- Always there, so that widening the window closes it properly (and unlocks the scroll). -->
+<app-mobile-menu [visible]="menuOpen() && compact()" (visibleChange)="menuOpen.set($event)" />
+
+<!-- Loaded on first use, like the data dialog. -->
+@defer (when printer.dialogOpen(); prefetch on idle) {
+  <app-print-dialog />
+}

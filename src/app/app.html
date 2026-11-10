@@ -1,0 +1,7 @@
+@if (access.open()) {
+  <app-shell />
+  <router-outlet />
+  <app-site-footer />
+} @else {
+  <app-access-gate />
+}

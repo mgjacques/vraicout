@@ -1,0 +1,159 @@
+@if (mode() === 'live') {
+  @if (store.missing().length) {
+    <p-message severity="error">{{
+      i18n.t('mortgage.form.incomplete', { fields: missingLabel() })
+    }}</p-message>
+  }
+}
+
+@if (shows('loan')) {
+  <section class="group">
+    <h3>{{ i18n.t('mortgage.form.loanTitle') }}</h3>
+    <label class="field" for="mortgage-loan-amount"
+      >{{ i18n.t('mortgage.form.loanAmount') }}<app-required-mark
+    /></label>
+    <app-money-input
+      inputId="mortgage-loan-amount"
+      [ngModel]="form().loan.amount"
+      (ngModelChange)="setLoanAmount($event)"
+      [min]="limits.loanAmount.min"
+      [max]="limits.loanAmount.max"
+      [invalid]="invalid('loanAmount')"
+      [maxFractionDigits]="0"
+    />
+    <p class="help">{{ i18n.t('mortgage.form.loanAmountHelp') }}</p>
+    <label class="field" for="mortgage-loan-years"
+      >{{ i18n.t('mortgage.form.loanYears') }}<app-required-mark
+    /></label>
+    <app-number-input
+      inputId="mortgage-loan-years"
+      [ngModel]="form().loan.years"
+      (ngModelChange)="setLoanYears($event)"
+      [min]="limits.years.min"
+      [max]="limits.years.max"
+      [invalid]="invalid('loanYears')"
+      [maxFractionDigits]="0"
+      [suffix]="years()"
+    />
+    <p class="help">{{ i18n.t('mortgage.form.loanYearsHelp') }}</p>
+    <label class="field" for="mortgage-loan-rate"
+      >{{ i18n.t('mortgage.form.loanRate') }}<app-required-mark
+    /></label>
+    <app-number-input
+      inputId="mortgage-loan-rate"
+      [ngModel]="ratePercent()"
+      (ngModelChange)="setLoanRate($event)"
+      [min]="limits.ratePercent.min"
+      [max]="limits.ratePercent.max"
+      [invalid]="invalid('loanRate')"
+      [maxFractionDigits]="2"
+      [suffix]="percent()"
+    />
+    <p class="help">{{ i18n.t('mortgage.form.loanRateHelp') }}</p>
+  </section>
+
+  <section class="group">
+    <h3>{{ i18n.t('mortgage.form.whoTitle') }}</h3>
+    <div class="switch-row">
+      <p-toggleswitch
+        inputId="mortgage-couple"
+        [ngModel]="form().couple"
+        (ngModelChange)="setCouple($event)"
+      />
+      <label for="mortgage-couple">{{ i18n.t('mortgage.form.couple') }}</label>
+    </div>
+    <p class="help">{{ i18n.t('mortgage.form.coupleHelp') }}</p>
+    @if (form().couple) {
+      <div class="reveal" animate.enter="reveal-in" animate.leave="reveal-out">
+        <div>
+          @for (id of people(); track id) {
+            <label class="field" [for]="'mortgage-label-' + id">{{
+              i18n.t(id === 'p1' ? 'mortgage.form.label1' : 'mortgage.form.label2')
+            }}</label>
+            <input
+              pInputText
+              [id]="'mortgage-label-' + id"
+              [ngModel]="form().people[id].label"
+              (ngModelChange)="setLabel(id, $event)"
+              maxlength="30"
+            />
+          }
+          <p class="help">{{ i18n.t('mortgage.form.labelHelp') }}</p>
+        </div>
+      </div>
+    }
+  </section>
+}
+
+@if (shows('bank')) {
+  <section class="group person-group bank">
+    <h3>{{ i18n.t('mortgage.form.bankTitle') }}</h3>
+    <label class="field" for="mortgage-bank-premium"
+      >{{ i18n.t(form().couple ? 'mortgage.form.bankPremiumCouple' : 'mortgage.form.bankPremium')
+      }}<app-required-mark
+    /></label>
+    <app-money-input
+      inputId="mortgage-bank-premium"
+      [ngModel]="form().bankPremium"
+      (ngModelChange)="setBankPremium($event)"
+      [min]="limits.premium.min"
+      [max]="limits.premium.max"
+      [invalid]="invalid('bankPremium')"
+    />
+    <p class="help">{{ i18n.t('mortgage.form.bankPremiumHelp') }}</p>
+    <p class="help">{{ i18n.t('mortgage.form.bankCoverageHelp') }}</p>
+  </section>
+}
+
+@if (shows('term')) {
+  @for (id of people(); track id) {
+    <section class="group person-group">
+      <h3>{{ termTitle(id) }}</h3>
+      <label class="field" [for]="'mortgage-term-amount-' + id"
+        >{{ i18n.t('mortgage.form.termAmount') }}<app-required-mark
+      /></label>
+      <app-money-input
+        [inputId]="'mortgage-term-amount-' + id"
+        [ngModel]="form().people[id].amount"
+        (ngModelChange)="setTermAmount(id, $event)"
+        [min]="limits.termAmount.min"
+        [max]="limits.termAmount.max"
+        [invalid]="invalid(field(id, 'Amount'))"
+        [maxFractionDigits]="0"
+      />
+      <label class="field" [for]="'mortgage-term-years-' + id"
+        >{{ i18n.t('mortgage.form.termYears') }}<app-required-mark
+      /></label>
+      <app-number-input
+        [inputId]="'mortgage-term-years-' + id"
+        [ngModel]="form().people[id].years"
+        (ngModelChange)="setTermYears(id, $event)"
+        [min]="limits.years.min"
+        [max]="limits.years.max"
+        [invalid]="invalid(field(id, 'Years'))"
+        [maxFractionDigits]="0"
+        [suffix]="years()"
+      />
+      <label class="field" [for]="'mortgage-term-premium-' + id"
+        >{{ i18n.t('mortgage.form.termPremium') }}<app-required-mark
+      /></label>
+      <app-money-input
+        [inputId]="'mortgage-term-premium-' + id"
+        [ngModel]="form().people[id].premium"
+        (ngModelChange)="setTermPremium(id, $event)"
+        [min]="limits.premium.min"
+        [max]="limits.premium.max"
+        [invalid]="invalid(field(id, 'Premium'))"
+      />
+      @if (id === 'p1') {
+        <p class="help">{{ i18n.t('mortgage.form.termAmountHelp') }}</p>
+        <p class="help">{{ i18n.t('mortgage.form.termYearsHelp') }}</p>
+        <p class="help">{{ i18n.t('mortgage.form.termPremiumHelp') }}</p>
+      }
+    </section>
+  }
+}
+
+@if (mode() === 'live') {
+  <app-reset-button effect="mortgage.form.resetEffect" (confirmed)="reset()" />
+}

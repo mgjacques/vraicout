@@ -1,0 +1,15 @@
+<section class="block">
+  <p class="kicker">{{ i18n.t('fees.learn.kicker') }}</p>
+  <h2>{{ i18n.t('fees.learn.heading') }}</h2>
+  <div class="lessons">
+    @for (lesson of lessons; track lesson.title) {
+      <article>
+        <h3>{{ i18n.t(lesson.title) }}</h3>
+        <p><app-rich-text [text]="i18n.t(lesson.body)" /></p>
+      </article>
+    }
+  </div>
+  <p class="print-omit">
+    <a class="method-link" routerLink="/frais/methode">{{ i18n.t('method.link') }}</a>
+  </p>
+</section>

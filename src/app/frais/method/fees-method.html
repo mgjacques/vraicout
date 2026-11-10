@@ -1,0 +1,16 @@
+<div class="wrap narrow">
+  <header class="mast">
+    <app-tool-breadcrumb tool="/frais" page="method" />
+    <h1>{{ i18n.t('method.title') }}</h1>
+    <p class="lede">{{ i18n.t('method.lede') }}</p>
+    <p class="help">{{ i18n.t('fees.method.updated') }}</p>
+  </header>
+
+  <app-doc-sections [sections]="sections" />
+
+  <p class="doc-back">
+    <a routerLink="/frais"
+      ><i class="pi pi-arrow-left" aria-hidden="true"></i> {{ i18n.t('method.back') }}</a
+    >
+  </p>
+</div>

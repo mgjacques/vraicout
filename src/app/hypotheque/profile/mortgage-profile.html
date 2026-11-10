@@ -1,0 +1,50 @@
+<div class="wrap narrow">
+  <header class="mast">
+    <p class="kicker">{{ progress() }}</p>
+    <h1>{{ i18n.t('mortgage.profile.title') }}</h1>
+    <p class="lede">{{ i18n.t('mortgage.profile.lede') }}</p>
+  </header>
+
+  <p-stepper class="steps" [value]="step()" (valueChange)="goTo($event)">
+    <p-step-list>
+      @for (item of steps; track item.title; let index = $index) {
+        <p-step
+          [value]="index + 1"
+          [disabled]="!reachable(index + 1)"
+          [class.done]="index + 1 < step()"
+        >
+          {{ i18n.t(item.short) }}
+        </p-step>
+      }
+    </p-step-list>
+  </p-stepper>
+
+  <section class="step-body" [attr.aria-labelledby]="'step-title'">
+    <h2 id="step-title" class="step-title" tabindex="-1" #stepHeading>
+      {{ i18n.t(current().title) }}
+    </h2>
+    <p class="help">{{ i18n.t(current().intro) }}</p>
+    <app-mortgage-form mode="draft" [sections]="current().sections" [errors]="showErrors()" />
+  </section>
+
+  <div class="profile-actions">
+    @if (step() > 1) {
+      <p-button
+        [label]="i18n.t('profile.back')"
+        icon="pi pi-arrow-left"
+        [outlined]="true"
+        severity="secondary"
+        (onClick)="back()"
+      />
+    }
+    <p-button
+      [label]="isLast() ? i18n.t('mortgage.profile.continue') : i18n.t('profile.next')"
+      [icon]="isLast() ? 'pi pi-chart-line' : 'pi pi-arrow-right'"
+      iconPos="right"
+      (onClick)="next()"
+    />
+    @if (showErrors() && missingHere().length) {
+      <p class="help error" role="alert">{{ missingMessage() }}</p>
+    }
+  </div>
+</div>

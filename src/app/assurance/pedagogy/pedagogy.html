@@ -1,0 +1,49 @@
+<section class="block">
+  <p class="kicker">{{ i18n.t('section.learn') }}</p>
+  <h2>{{ i18n.t('pedagogy.heading') }}</h2>
+  <p class="help">{{ i18n.t('pedagogy.intro') }}</p>
+  <div class="lessons">
+    <article>
+      <h3>{{ i18n.t('pedagogy.premiums.title') }}</h3>
+      <p>{{ i18n.t('pedagogy.premiums.body') }}</p>
+    </article>
+    <article>
+      <h3>{{ i18n.t('pedagogy.capital.title') }}</h3>
+      <p>{{ i18n.t('pedagogy.capital.body') }}</p>
+    </article>
+    <article>
+      <h3>{{ i18n.t('pedagogy.dividends.title') }}</h3>
+      <p><app-rich-text [text]="i18n.t('pedagogy.dividends.body')" /></p>
+    </article>
+    <article>
+      <h3>{{ i18n.t('pedagogy.cash.title') }}</h3>
+      <p>{{ i18n.t('pedagogy.cash.body') }}</p>
+    </article>
+    <article>
+      <h3>{{ i18n.t('pedagogy.paidup.title') }}</h3>
+      <p>{{ paidUp() }}</p>
+    </article>
+    <article>
+      <h3>{{ i18n.t('pedagogy.opportunity.title') }}</h3>
+      <p>{{ i18n.t('pedagogy.opportunity.body') }}</p>
+    </article>
+  </div>
+</section>
+
+<section class="block" id="lexique">
+  <h2>{{ i18n.t('glossary.heading') }}</h2>
+  <p class="help">{{ i18n.t('glossary.intro') }}</p>
+  <p-accordion class="glossary" [multiple]="true">
+    @for (entry of glossary; track entry.id) {
+      <p-accordion-panel [value]="entry.id">
+        <p-accordion-header>{{ i18n.t(entry.title) }}</p-accordion-header>
+        <p-accordion-content>
+          <p>{{ i18n.t(entry.body) }}</p>
+        </p-accordion-content>
+      </p-accordion-panel>
+    }
+  </p-accordion>
+  <p class="print-omit">
+    <a class="method-link" routerLink="/assurance/methode">{{ i18n.t('method.link') }}</a>
+  </p>
+</section>

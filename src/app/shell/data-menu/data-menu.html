@@ -1,0 +1,33 @@
+<button
+  type="button"
+  class="data-trigger"
+  aria-haspopup="menu"
+  [attr.aria-expanded]="open()"
+  [attr.aria-label]="i18n.t('data.menu')"
+  (click)="open.set(!open())"
+>
+  <p-avatar icon="pi pi-user" shape="circle" />
+</button>
+
+@if (open() && !confirming()) {
+  <div class="data-pop" animate.enter="data-pop-in">
+    <ul role="menu" [attr.aria-label]="i18n.t('data.menu')">
+      <li role="none">
+        <a role="menuitem" routerLink="/donnees" (click)="open.set(false)">
+          <i class="pi pi-arrow-right-arrow-left" aria-hidden="true"></i>
+          {{ i18n.t('data.transfer') }}
+        </a>
+      </li>
+      <li role="none">
+        <button type="button" role="menuitem" (click)="askClear()">
+          <i class="pi pi-trash" aria-hidden="true"></i> {{ i18n.t('data.clear') }}
+        </button>
+      </li>
+    </ul>
+  </div>
+}
+
+<!-- Loaded on first use: the dialog stays out of every page's initial download. -->
+@defer (when confirming(); prefetch on idle) {
+  <app-clear-data-dialog [(visible)]="confirming" />
+}

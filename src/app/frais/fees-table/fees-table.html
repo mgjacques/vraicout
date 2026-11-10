@@ -1,0 +1,40 @@
+<section class="block">
+  <p-panel
+    class="guide"
+    [header]="i18n.t('fees.table.heading')"
+    [toggleable]="true"
+    [collapsed]="true"
+  >
+    <p class="help">{{ i18n.t('fees.table.intro') }}</p>
+    <div class="fees-table">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">{{ i18n.t('fees.table.year') }}</th>
+            <th scope="col" class="fee-a">{{ names().a }}</th>
+            <th scope="col" class="fee-b">{{ names().b }}</th>
+            <th scope="col">{{ i18n.t('fees.chart.none') }}</th>
+            <th scope="col" class="fee-a">
+              {{ i18n.t('fees.table.feesOf', { label: names().a }) }}
+            </th>
+            <th scope="col" class="fee-b">
+              {{ i18n.t('fees.table.feesOf', { label: names().b }) }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of rows(); track row.month) {
+            <tr [class.drawdown]="row.phase === 'drawdown'">
+              <th scope="row">{{ row.year }}</th>
+              <td>{{ money(row.balance.a) }}</td>
+              <td>{{ money(row.balance.b) }}</td>
+              <td>{{ money(row.balance.none) }}</td>
+              <td>{{ money(row.feesPaid.a) }}</td>
+              <td>{{ money(row.feesPaid.b) }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </p-panel>
+</section>

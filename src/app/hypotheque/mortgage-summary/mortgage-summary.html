@@ -1,0 +1,130 @@
+<section class="block">
+  <p class="kicker">{{ heading() }}</p>
+  <div class="year-picker">
+    <label class="field" for="mortgage-death-year">{{ i18n.t('mortgage.summary.pickYear') }}</label>
+    <p-inputnumber
+      inputId="mortgage-death-year"
+      [ngModel]="store.year()"
+      (ngModelChange)="setYear($event)"
+      [showButtons]="true"
+      buttonLayout="horizontal"
+      [min]="1"
+      [max]="projection().input.loan.years"
+      [maxFractionDigits]="0"
+      [prefix]="i18n.t('unit.yearPrefix')"
+      incrementButtonIcon="pi pi-plus"
+      decrementButtonIcon="pi pi-minus"
+    />
+    @if (couple()) {
+      <span class="field" id="mortgage-death-person">{{
+        i18n.t('mortgage.summary.pickPerson')
+      }}</span>
+      <p-selectbutton
+        [options]="personOptions()"
+        optionLabel="label"
+        optionValue="value"
+        [allowEmpty]="false"
+        [ngModel]="death().person"
+        (ngModelChange)="setPerson($event)"
+        ariaLabelledBy="mortgage-death-person"
+      />
+    }
+    <p class="help">{{ i18n.t('mortgage.summary.pickHelp') }}</p>
+  </div>
+
+  <div class="mortgage-cards">
+    <article class="card mortgage-card term">
+      <header>
+        <h2>{{ i18n.t('mortgage.option.term') }}</h2>
+        <p class="sub">{{ termSub() }}</p>
+      </header>
+      <div class="metric row-premium">
+        <p class="lab">{{ i18n.t('mortgage.summary.premium') }}</p>
+        <app-figure [money]="projection().term.premium" [exact]="true" />
+        <p class="sub">{{ termPremiumNote() }}</p>
+        <p class="sub">{{ termLevelText() }}</p>
+      </div>
+      <div class="metric row-paid">
+        <p class="lab">{{ i18n.t('mortgage.summary.paid') }}</p>
+        <app-figure [money]="projection().term.premiumsPaid" />
+        <p class="sub">{{ i18n.t('mortgage.summary.paidHelp') }}</p>
+      </div>
+      <div class="metric row-death">
+        <p class="lab">{{ deathTitle() }}</p>
+        <app-figure [money]="death().term.payout" />
+        <p class="sub">{{ i18n.t('mortgage.summary.termPaidTo') }}</p>
+        @if (death().term.free; as free) {
+          <p class="sub">{{ i18n.t('mortgage.summary.free') }} <app-figure [money]="free" /></p>
+        }
+        @if (death().term.shortfall; as shortfall) {
+          <p class="sub">
+            {{ i18n.t('mortgage.summary.shortfall') }} <app-figure [money]="shortfall" />
+          </p>
+        }
+        @if (death().term.survivorCoverage; as kept) {
+          <p class="sub">
+            @if (kept.value > 0) {
+              {{ i18n.t('mortgage.summary.survivorKeeps', { name: survivor() }) }}
+              <app-figure [money]="kept" />
+            } @else {
+              {{ i18n.t('mortgage.summary.survivorEnded', { name: survivor() }) }}
+            }
+          </p>
+        }
+      </div>
+    </article>
+
+    <article class="card mortgage-card bank">
+      <header>
+        <h2>{{ i18n.t('mortgage.option.bank') }}</h2>
+        <p class="sub">{{ i18n.t('mortgage.summary.bankSub') }}</p>
+      </header>
+      <div class="metric row-premium">
+        <p class="lab">{{ i18n.t('mortgage.summary.premium') }}</p>
+        <app-figure [money]="projection().bank.premium" [exact]="true" />
+        <p class="sub">{{ bankPremiumNote() }}</p>
+        <p class="sub melting">
+          @if (death().year > 1) {
+            {{ meltingText() }} <app-figure [money]="death().balance" />{{ meltingShare() }}
+          } @else {
+            {{ i18n.t('mortgage.summary.meltingStart') }}
+          }
+        </p>
+      </div>
+      <div class="metric row-paid">
+        <p class="lab">{{ i18n.t('mortgage.summary.paid') }}</p>
+        <app-figure [money]="projection().bank.premiumsPaid" />
+        <p class="sub">{{ i18n.t('mortgage.summary.paidHelp') }}</p>
+      </div>
+      <div class="metric row-death">
+        <p class="lab">{{ deathTitle() }}</p>
+        <app-figure [money]="death().bank.payout" />
+        <p class="sub">{{ i18n.t('mortgage.summary.bankPaidTo') }}</p>
+        <p class="sub">{{ i18n.t('mortgage.summary.bankFree') }}</p>
+        @if (couple()) {
+          <p class="sub">{{ i18n.t('mortgage.summary.bankSurvivor', { name: survivor() }) }}</p>
+        }
+      </div>
+    </article>
+  </div>
+
+  <aside class="brief" aria-live="polite">
+    <h3>{{ i18n.t('mortgage.brief.title') }}</h3>
+    <ul>
+      <li>{{ i18n.t('mortgage.brief.payment') }} <app-figure [money]="projection().payment" /></li>
+      @if (projection().premiumGap; as gap) {
+        <li>{{ gapText() }} <app-figure [money]="gap.amount" /></li>
+      } @else {
+        <li>{{ i18n.t('mortgage.brief.samePremiums') }}</li>
+      }
+      @for (fit of projection().fits; track fit.person) {
+        @if (fit.endsEarly; as early) {
+          <li>{{ fitText(fit) }} <app-figure [money]="early.balance" /></li>
+        } @else if (fit.yearsAfter > 0) {
+          <li>{{ fitText(fit) }}</li>
+        }
+      }
+    </ul>
+    <p class="help">{{ i18n.t('mortgage.brief.note') }}</p>
+  </aside>
+</section>

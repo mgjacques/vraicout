@@ -1,0 +1,16 @@
+<section class="block">
+  <article class="chart-card">
+    <h2>{{ i18n.t('fees.chart.title') }}</h2>
+    <p class="help">{{ subtitle() }}</p>
+    <div class="chart-frame">
+      <p-chart
+        type="line"
+        [data]="data()"
+        [options]="options()"
+        [plugins]="plugins"
+        [ariaLabel]="i18n.t('fees.chart.aria')"
+        height="320"
+      />
+    </div>
+  </article>
+</section>

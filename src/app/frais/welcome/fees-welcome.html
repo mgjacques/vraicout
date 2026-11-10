@@ -1,0 +1,64 @@
+<div class="wrap welcome">
+  <header class="mast">
+    <app-tool-breadcrumb tool="/frais" page="intro" />
+    <h1>{{ i18n.t('fees.welcome.title') }}</h1>
+    <p class="lede">{{ i18n.t('fees.welcome.lede') }}</p>
+  </header>
+
+  <app-warning variant="investing" />
+
+  <section class="welcome-section audience" aria-labelledby="audience-title">
+    <h2 id="audience-title">{{ i18n.t('fees.welcome.audience.title') }}</h2>
+    <div class="audience-cols">
+      <div class="welcome-card audience-col for">
+        <h3>
+          <i class="pi pi-check" aria-hidden="true"></i> {{ i18n.t('fees.welcome.audience.for') }}
+        </h3>
+        <ul>
+          @for (key of audienceFor; track key) {
+            <li>{{ i18n.t(key) }}</li>
+          }
+        </ul>
+      </div>
+      <div class="welcome-card audience-col less">
+        <h3>
+          <i class="pi pi-info-circle" aria-hidden="true"></i>
+          {{ i18n.t('fees.welcome.audience.less') }}
+        </h3>
+        <ul>
+          @for (key of audienceLess; track key) {
+            <li>{{ i18n.t(key) }}</li>
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="welcome-section" aria-labelledby="check-title">
+    <h2 id="check-title">{{ i18n.t('fees.welcome.check.title') }}</h2>
+    <div class="welcome-card check">
+      <p>{{ i18n.t('fees.welcome.check.intro') }}</p>
+      <ul class="checklist">
+        @for (key of checks; track key) {
+          <li>
+            <i class="pi pi-search" aria-hidden="true"></i>
+            <span><app-rich-text [text]="i18n.t(key)" /></span>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <div class="welcome-actions">
+    <p-button
+      [label]="i18n.t(hasResults() ? 'welcome.backToResults' : 'fees.welcome.start')"
+      (onClick)="start()"
+    />
+    <p class="help private">
+      <i class="pi pi-lock" aria-hidden="true"></i> {{ i18n.t('welcome.private') }}
+    </p>
+    <p class="help">
+      <a class="method-link" routerLink="/frais/methode">{{ i18n.t('method.link') }}</a>
+    </p>
+  </div>
+</div>

@@ -1,0 +1,173 @@
+<div class="wrap">
+  <header class="mast">
+    <app-tool-breadcrumb tool="/partage" />
+    <h1>{{ i18n.t('split.title') }}</h1>
+    <p class="lede">{{ i18n.t('split.lede') }}</p>
+    <app-tool-links method="/partage/methode" />
+  </header>
+
+  <section class="block split-form">
+    <h2>{{ i18n.t('split.form.heading') }}</h2>
+    @if (store.missing().length) {
+      <p-message severity="error" class="split-incomplete">{{
+        i18n.t('split.form.incomplete', { fields: missingLabel() })
+      }}</p-message>
+    }
+
+    <div class="split-people">
+      @for (id of people; track id) {
+        <fieldset class="group split-person" [class]="id">
+          <legend>{{ name(id) }}</legend>
+          <label class="field" [for]="'split-label-' + id">{{ i18n.t('split.form.label') }}</label>
+          <input
+            pInputText
+            [id]="'split-label-' + id"
+            [ngModel]="form().people[id].label"
+            (ngModelChange)="setLabel(id, $event)"
+            maxlength="30"
+            autocomplete="off"
+          />
+
+          <label class="field" [for]="'split-frequency-' + id">{{
+            i18n.t('split.form.frequency')
+          }}</label>
+          <p-select
+            [inputId]="'split-frequency-' + id"
+            [options]="frequencyOptions()"
+            optionLabel="label"
+            optionValue="value"
+            [ngModel]="form().people[id].frequency"
+            (ngModelChange)="setFrequency(id, $event)"
+            appendTo="body"
+          />
+
+          <label class="field" [for]="'split-salary-' + id"
+            >{{ i18n.t('split.form.salary') }}<app-required-mark
+          /></label>
+          <app-money-input
+            [inputId]="'split-salary-' + id"
+            [ngModel]="form().people[id].salary"
+            (ngModelChange)="setSalary(id, $event)"
+            [min]="0"
+            [max]="payMax(form().people[id].frequency)"
+            [invalid]="invalid(id)"
+            [maxFractionDigits]="2"
+          />
+        </fieldset>
+      }
+    </div>
+    <p class="help"><app-rich-text [text]="i18n.t('split.form.salaryHelp')" /></p>
+  </section>
+
+  <div class="block split-row">
+    <div class="split-side">
+      <div class="group split-bill">
+        <label class="field" for="split-bill">{{ i18n.t('split.form.bill') }}</label>
+        <app-money-input
+          inputId="split-bill"
+          [ngModel]="form().bill"
+          (ngModelChange)="setBill($event)"
+          [min]="limits.bill.min"
+          [max]="limits.bill.max"
+          [maxFractionDigits]="2"
+        />
+        <p class="help">{{ i18n.t('split.form.billHelp') }}</p>
+      </div>
+
+      <app-reset-button effect="split.reset.effect" (confirmed)="store.reset()" />
+    </div>
+
+    <section class="split-result" aria-live="polite">
+      <p class="kicker">{{ i18n.t('split.result.kicker') }}</p>
+      <app-stale-results [stale]="store.missing().length > 0">
+        @if (result(); as split) {
+          <article class="card split-card">
+            <div class="metric row-ratio">
+              <p class="lab">{{ i18n.t('split.result.ratio') }}</p>
+              <p class="split-ratio">
+                {{ split.rounded.p1 }} <span class="slash">/</span> {{ split.rounded.p2 }}
+              </p>
+              <div class="split-bar" aria-hidden="true">
+                <span class="p1" [style.width.%]="split.share.p1"></span>
+                <span class="p2" [style.width.%]="split.share.p2"></span>
+              </div>
+              <ul class="split-legend">
+                @for (id of people; track id) {
+                  <li [class]="id">{{ name(id) }} : {{ percent(split.share[id]) }}</li>
+                }
+              </ul>
+              <p class="sub">
+                {{
+                  i18n.t('split.result.five', {
+                    p1: split.roundedFive.p1,
+                    p2: split.roundedFive.p2,
+                  })
+                }}
+              </p>
+              <p class="sub">{{ i18n.t('split.result.same') }}</p>
+            </div>
+            <div class="metric row-annual">
+              <p class="lab">{{ i18n.t('split.result.annual') }}</p>
+              @for (id of people; track id) {
+                <p class="split-line">
+                  <span>{{ name(id) }}</span> <app-figure [money]="split.annual[id]" />
+                </p>
+              }
+              <p class="split-line split-combined">
+                <span>{{ i18n.t('split.result.combined') }}</span>
+                <app-figure [money]="split.combined" />
+              </p>
+            </div>
+            @if (split.bill; as bill) {
+              <div class="metric row-bill">
+                <p class="lab">{{ billText() }}</p>
+                @for (id of people; track id) {
+                  <p class="split-line">
+                    <span>{{ name(id) }}</span> <app-figure [money]="bill[id]" [exact]="true" />
+                  </p>
+                }
+              </div>
+            }
+          </article>
+        }
+      </app-stale-results>
+    </section>
+  </div>
+
+  <section class="block split-basis" aria-labelledby="split-basis-title">
+    <h2 id="split-basis-title">
+      <i class="pi pi-info-circle" aria-hidden="true"></i> {{ i18n.t('split.basis.heading') }}
+    </h2>
+    <p class="lede"><app-rich-text [text]="i18n.t('split.basis.intro')" /></p>
+    <div class="lessons">
+      @for (lesson of basisLessons; track lesson.title) {
+        <article>
+          <h3>{{ i18n.t(lesson.title) }}</h3>
+          <p>{{ i18n.t(lesson.body) }}</p>
+        </article>
+      }
+    </div>
+  </section>
+
+  <section class="block">
+    <p class="kicker">{{ i18n.t('split.learn.kicker') }}</p>
+    <h2>{{ i18n.t('split.learn.heading') }}</h2>
+    <div class="lessons">
+      @for (lesson of lessons; track lesson.title) {
+        <article>
+          <h3>{{ i18n.t(lesson.title) }}</h3>
+          <p>{{ i18n.t(lesson.body) }}</p>
+        </article>
+      }
+    </div>
+    <p class="print-omit">
+      <a class="method-link" routerLink="/partage/methode">{{ i18n.t('method.link') }}</a>
+    </p>
+  </section>
+
+  <app-page-notes>
+    <p>{{ i18n.t('app.footer') }}</p>
+  </app-page-notes>
+</div>
+
+<app-formula-popover />

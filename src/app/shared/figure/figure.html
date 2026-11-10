@@ -1,0 +1,10 @@
+<button
+  type="button"
+  class="figure"
+  [attr.aria-label]="aria()"
+  (pointerenter)="enter($event)"
+  (pointerleave)="leave()"
+  (click)="toggle($event)"
+>
+  {{ text() }}
+</button>

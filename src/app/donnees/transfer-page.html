@@ -1,0 +1,111 @@
+<div class="wrap narrow transfer">
+  <header class="mast">
+    <h1>{{ i18n.t('transfer.title') }}</h1>
+    <p class="lede">{{ i18n.t('transfer.lede') }}</p>
+  </header>
+
+  @if (imported) {
+    <p-message severity="success" class="transfer-done">{{
+      i18n.t('transfer.import.done')
+    }}</p-message>
+  }
+
+  <section class="doc-section" aria-labelledby="exporter-title">
+    <h2 id="exporter-title">{{ i18n.t('transfer.export.title') }}</h2>
+    @if (code) {
+      <p class="help"><app-rich-text [text]="i18n.t('transfer.export.help')" /></p>
+      <label class="transfer-label" for="transfer-export">{{
+        i18n.t('transfer.export.label')
+      }}</label>
+      <textarea
+        #exported
+        id="transfer-export"
+        class="transfer-code"
+        pTextarea
+        rows="5"
+        readonly
+        spellcheck="false"
+        [value]="code"
+        (focus)="exported.select()"
+      ></textarea>
+      <div class="transfer-actions">
+        <p-button
+          [label]="i18n.t('transfer.export.copy')"
+          icon="pi pi-copy"
+          (onClick)="copy(exported)"
+        />
+        <p class="help" role="status">
+          @if (copyStatus(); as status) {
+            {{ i18n.t(status) }}
+          }
+        </p>
+      </div>
+    } @else {
+      <p class="help">{{ i18n.t('transfer.export.empty') }}</p>
+    }
+  </section>
+
+  <section class="doc-section" aria-labelledby="importer-title">
+    <h2 id="importer-title">{{ i18n.t('transfer.import.title') }}</h2>
+    <p class="help">{{ i18n.t('transfer.import.help') }}</p>
+    <label class="transfer-label" for="transfer-import">{{
+      i18n.t('transfer.import.label')
+    }}</label>
+    <textarea
+      id="transfer-import"
+      class="transfer-code"
+      pTextarea
+      rows="5"
+      spellcheck="false"
+      autocomplete="off"
+      [value]="pasted()"
+      [attr.aria-invalid]="importError() ? true : null"
+      [attr.aria-describedby]="importError() ? 'transfer-import-error' : null"
+      (input)="onPaste($any($event.target).value)"
+    ></textarea>
+    <div class="transfer-actions">
+      <p-button
+        [label]="i18n.t('transfer.import.apply')"
+        icon="pi pi-upload"
+        [disabled]="!pasted().trim()"
+        (onClick)="askImport()"
+      />
+    </div>
+    @if (importError(); as error) {
+      <p-message id="transfer-import-error" severity="error" class="transfer-error">{{
+        i18n.t(error)
+      }}</p-message>
+    }
+  </section>
+</div>
+
+<!-- Loaded on first use: the dialog stays out of the page's initial download. -->
+@defer (when confirming(); prefetch on idle) {
+  <p-dialog
+    class="transfer-dialog"
+    appendTo="body"
+    [visible]="confirming()"
+    (visibleChange)="confirming.set($event)"
+    [modal]="true"
+    [dismissableMask]="true"
+    [draggable]="false"
+    [resizable]="false"
+    [header]="i18n.t('transfer.dialog.title')"
+    [style]="{ width: 'min(30rem, calc(100vw - 2rem))' }"
+  >
+    <p>{{ i18n.t('transfer.dialog.effect') }}</p>
+    <ng-template #footer>
+      <p-button
+        [label]="i18n.t('transfer.dialog.cancel')"
+        severity="secondary"
+        [text]="true"
+        (onClick)="confirming.set(false)"
+      />
+      <p-button
+        [label]="i18n.t('transfer.dialog.confirm')"
+        icon="pi pi-upload"
+        (onClick)="confirmImport()"
+      />
+    </ng-template>
+  </p-dialog>
+}

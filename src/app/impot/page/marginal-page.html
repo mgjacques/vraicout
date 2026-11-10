@@ -1,0 +1,128 @@
+<div class="wrap">
+  <header class="mast">
+    <app-tool-breadcrumb tool="/impot" />
+    <h1>{{ i18n.t('marginal.title') }}</h1>
+    <p class="lede">{{ i18n.t('marginal.lede') }}</p>
+    <app-tool-links method="/impot/methode" />
+  </header>
+
+  <div class="block marginal-row">
+    <div class="marginal-side">
+      <fieldset class="marginal-box">
+        <legend>{{ i18n.t('marginal.form.heading') }}</legend>
+        @if (store.missing().length) {
+          <p-message severity="error" class="marginal-incomplete">{{
+            i18n.t('marginal.form.incomplete', { fields: missingLabel() })
+          }}</p-message>
+        }
+
+        <label class="field" for="marginal-income"
+          >{{ i18n.t('marginal.form.income') }}<app-required-mark
+        /></label>
+        <app-money-input
+          inputId="marginal-income"
+          [ngModel]="form().income"
+          (ngModelChange)="setIncome($event)"
+          [min]="limits.income.min"
+          [max]="limits.income.max"
+          [invalid]="invalid('income')"
+        />
+        <p class="help"><app-rich-text [text]="i18n.t('marginal.form.incomeHelp')" /></p>
+
+        <label class="field" for="marginal-extra">{{ i18n.t('marginal.form.extra') }}</label>
+        <app-money-input
+          inputId="marginal-extra"
+          [ngModel]="form().extra"
+          (ngModelChange)="setExtra($event)"
+          [min]="limits.extra.min"
+          [max]="limits.extra.max"
+        />
+        <p class="help">{{ i18n.t('marginal.form.extraHelp') }}</p>
+      </fieldset>
+
+      <app-reset-button effect="marginal.reset.effect" (confirmed)="store.reset()" />
+    </div>
+
+    <section class="marginal-result" aria-live="polite">
+      <p class="kicker">{{ i18n.t('marginal.result.kicker') }}</p>
+      <app-stale-results [stale]="store.missing().length > 0">
+        @let tax = result();
+        <article class="card marginal-card">
+          <div class="metric">
+            <p class="lab">{{ i18n.t('marginal.result.marginal') }}</p>
+            <p class="marginal-big"><app-figure [money]="tax.marginal" unit="percent" /></p>
+            <p class="marginal-line">
+              <span>{{ i18n.t('marginal.result.federal') }}</span>
+              <app-figure [money]="tax.federal.rate" unit="percent" />
+            </p>
+            <p class="marginal-line">
+              <span>{{ i18n.t('marginal.result.quebec') }}</span>
+              <app-figure [money]="tax.quebec.rate" unit="percent" />
+            </p>
+            <p class="help">{{ i18n.t('marginal.result.year', { year: year }) }}</p>
+          </div>
+          <div class="metric">
+            <p class="lab">{{ i18n.t('marginal.result.taxes') }}</p>
+            <p class="marginal-line">
+              <span>{{ i18n.t('marginal.result.federalTax') }}</span>
+              <app-figure [money]="tax.federal.tax" />
+            </p>
+            <p class="marginal-line">
+              <span>{{ i18n.t('marginal.result.quebecTax') }}</span>
+              <app-figure [money]="tax.quebec.tax" />
+            </p>
+            <p class="marginal-line">
+              <span>{{ i18n.t('marginal.result.total') }}</span>
+              <app-figure [money]="tax.total" />
+            </p>
+            <p class="marginal-line marginal-strong">
+              <span>{{ i18n.t('marginal.result.average') }}</span>
+              <app-figure [money]="tax.average" unit="percent" />
+            </p>
+          </div>
+          @if (tax.extra; as extra) {
+            <div class="metric">
+              <p class="lab">{{ extraTitle() }}</p>
+              <p class="marginal-line">
+                <span>{{ i18n.t('marginal.extra.tax') }}</span>
+                <app-figure [money]="extra.tax" />
+              </p>
+              <p class="marginal-line">
+                <span>{{ i18n.t('marginal.extra.kept') }}</span>
+                <app-figure [money]="extra.kept" />
+              </p>
+              <p class="marginal-line marginal-strong">
+                <span>{{ i18n.t('marginal.extra.rate') }}</span>
+                <app-figure [money]="extra.rate" unit="percent" />
+              </p>
+            </div>
+          }
+        </article>
+      </app-stale-results>
+    </section>
+  </div>
+
+  <app-rate-chart />
+
+  <section class="block">
+    <p class="kicker">{{ i18n.t('marginal.learn.kicker') }}</p>
+    <h2>{{ i18n.t('marginal.learn.heading') }}</h2>
+    <div class="lessons">
+      @for (lesson of lessons; track lesson.title) {
+        <article>
+          <h3>{{ i18n.t(lesson.title) }}</h3>
+          <p><app-rich-text [text]="i18n.t(lesson.body)" /></p>
+        </article>
+      }
+    </div>
+    <p class="print-omit">
+      <a class="method-link" routerLink="/impot/methode">{{ i18n.t('method.link') }}</a>
+    </p>
+  </section>
+
+  <app-page-notes>
+    <p>{{ i18n.t('app.footer') }}</p>
+  </app-page-notes>
+</div>
+
+<app-formula-popover />

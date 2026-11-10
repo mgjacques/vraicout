@@ -1,0 +1,231 @@
+<div class="wrap">
+  <header class="mast">
+    <app-tool-breadcrumb tool="/epargne" />
+    <h1>{{ i18n.t('savings.title') }}</h1>
+    <p class="lede">{{ i18n.t('savings.lede') }}</p>
+    <app-tool-links method="/epargne/methode" />
+  </header>
+
+  <app-warning variant="investing" />
+
+  <section class="block savings-form">
+    <h2>{{ i18n.t('savings.form.heading') }}</h2>
+    @if (store.missing().length) {
+      <p-message severity="error" class="savings-incomplete">{{
+        i18n.t('savings.form.incomplete', { fields: missingLabel() })
+      }}</p-message>
+    }
+
+    <div class="savings-fields">
+      <div class="group">
+        <label class="field" for="savings-initial">{{ i18n.t('savings.form.initial') }}</label>
+        <app-money-input
+          inputId="savings-initial"
+          [ngModel]="form().initial"
+          (ngModelChange)="setInitial($event)"
+          [min]="limits.initialAmount.min"
+          [max]="limits.initialAmount.max"
+          [invalid]="invalid('amount')"
+        />
+        <p class="help">{{ i18n.t('savings.form.initialHelp') }}</p>
+
+        <label class="field" for="savings-monthly"
+          >{{ i18n.t('savings.form.monthly') }}<app-required-mark
+        /></label>
+        <app-money-input
+          inputId="savings-monthly"
+          [ngModel]="form().monthly"
+          (ngModelChange)="setMonthly($event)"
+          [min]="limits.monthlyDeposit.min"
+          [max]="limits.monthlyDeposit.max"
+          [invalid]="invalid('amount')"
+          [maxFractionDigits]="2"
+        />
+        <p class="help">{{ i18n.t('savings.form.monthlyHelp') }}</p>
+      </div>
+
+      <div class="group">
+        <label class="field" for="savings-deposit-years"
+          >{{ i18n.t('savings.form.depositYears') }}<app-required-mark
+        /></label>
+        <app-number-input
+          inputId="savings-deposit-years"
+          [ngModel]="form().depositYears"
+          (ngModelChange)="setDepositYears($event)"
+          [min]="limits.depositYears.min"
+          [max]="limits.depositYears.max"
+          [invalid]="invalid('depositYears')"
+          [maxFractionDigits]="0"
+          [suffix]="years()"
+        />
+        <p class="help">{{ i18n.t('savings.form.depositYearsHelp') }}</p>
+
+        <label class="field" for="savings-growth-years">{{
+          i18n.t('savings.form.growthYears')
+        }}</label>
+        <app-number-input
+          inputId="savings-growth-years"
+          [ngModel]="form().growthYears"
+          (ngModelChange)="setGrowthYears($event)"
+          [min]="limits.growthYears.min"
+          [max]="limits.growthYears.max"
+          [maxFractionDigits]="0"
+          [suffix]="years()"
+        />
+        <p class="help">{{ i18n.t('savings.form.growthYearsHelp') }}</p>
+      </div>
+
+      <div class="group">
+        <label class="field" for="savings-return"
+          >{{ i18n.t('savings.form.return') }}<app-required-mark
+        /></label>
+        <app-number-input
+          inputId="savings-return"
+          [ngModel]="returnPercent()"
+          (ngModelChange)="setReturn($event)"
+          [min]="limits.returnPercent.min"
+          [max]="limits.returnPercent.max"
+          [invalid]="invalid('return')"
+          [maxFractionDigits]="2"
+          [suffix]="percent()"
+        />
+        <p class="help"><app-rich-text [text]="i18n.t('savings.form.returnHelp')" /></p>
+      </div>
+    </div>
+  </section>
+
+  <div class="block savings-row">
+    <div class="savings-side">
+      <fieldset class="savings-box">
+        <legend>{{ i18n.t('savings.form.late') }}</legend>
+        <label class="field" for="savings-delay">{{ i18n.t('savings.form.delay') }}</label>
+        <app-number-input
+          inputId="savings-delay"
+          [ngModel]="form().delayYears"
+          (ngModelChange)="setDelay($event)"
+          [min]="limits.delayYears.min"
+          [max]="limits.delayYears.max"
+          [invalid]="invalid('delay')"
+          [maxFractionDigits]="0"
+          [suffix]="years()"
+        />
+        <p class="help">{{ i18n.t('savings.form.delayHelp') }}</p>
+      </fieldset>
+
+      <fieldset class="savings-box">
+        <legend>{{ i18n.t('savings.form.real') }}</legend>
+        <div class="switch-row">
+          <p-toggleswitch
+            inputId="savings-real-dollars"
+            [ngModel]="form().realDollars"
+            (ngModelChange)="setRealDollars($event)"
+          />
+          <label for="savings-real-dollars">{{ i18n.t('drawer.realDollars') }}</label>
+        </div>
+        <p class="help">{{ i18n.t('drawer.realDollarsHelp') }}</p>
+        @if (form().realDollars) {
+          <label class="field" for="savings-inflation">{{ i18n.t('drawer.inflation') }}</label>
+          <app-number-input
+            inputId="savings-inflation"
+            [ngModel]="inflationPercent()"
+            (ngModelChange)="setInflation($event)"
+            [min]="limits.inflationPercent.min"
+            [max]="limits.inflationPercent.max"
+            [maxFractionDigits]="2"
+            [suffix]="percent()"
+          />
+          <p class="help">{{ i18n.t('drawer.inflationHelp') }}</p>
+        }
+      </fieldset>
+
+      <app-reset-button effect="savings.reset.effect" (confirmed)="store.reset()" />
+    </div>
+
+    <section class="savings-result" aria-live="polite">
+      <p class="kicker">{{ i18n.t('savings.result.kicker') }}</p>
+      <app-stale-results [stale]="store.missing().length > 0">
+        @let plan = result();
+        <article class="card savings-card">
+          <div class="metric">
+            <p class="lab">{{ i18n.t('savings.result.final', { years: plan.totalYears }) }}</p>
+            <p class="savings-big"><app-figure [money]="plan.track.final" /></p>
+            <p class="savings-line">
+              <span>{{ i18n.t('savings.result.deposited') }}</span>
+              <app-figure [money]="plan.track.deposited" />
+            </p>
+            <p class="savings-line">
+              <span>{{ i18n.t('savings.result.interest') }}</span>
+              <app-figure [money]="plan.interest" />
+            </p>
+            @if (plan.track.depositEnd; as depositEnd) {
+              <p class="savings-line">
+                <span>{{ i18n.t('savings.result.depositEnd') }}</span>
+                <app-figure [money]="depositEnd" />
+              </p>
+            }
+            <p class="savings-line savings-share">
+              <span>{{ i18n.t('savings.result.share') }}</span>
+              <app-figure [money]="plan.interestShare" unit="percent" />
+            </p>
+          </div>
+          @if (plan.late; as late) {
+            <div class="metric">
+              <p class="lab">
+                {{ i18n.t('savings.late.title', { delay: plan.input.delayYears }) }}
+              </p>
+              <p class="savings-line">
+                <span>{{ i18n.t('savings.result.final', { years: plan.totalYears }) }}</span>
+                <app-figure [money]="late.track.final" />
+              </p>
+              <p class="savings-line">
+                <span>{{ i18n.t('savings.result.deposited') }}</span>
+                <app-figure [money]="late.track.deposited" />
+              </p>
+              @if (late.track.depositEnd; as lateDepositEnd) {
+                <p class="savings-line">
+                  <span>{{ i18n.t('savings.result.depositEnd') }}</span>
+                  <app-figure [money]="lateDepositEnd" />
+                </p>
+              }
+              <p class="savings-line">
+                <span>{{ i18n.t('savings.late.missed') }}</span>
+                <app-figure [money]="late.missed" />
+              </p>
+              <p class="savings-line savings-share">
+                <span>{{ i18n.t('savings.late.cost') }}</span>
+                <app-figure [money]="late.cost" />
+              </p>
+            </div>
+          }
+          @if (plan.input.realDollars) {
+            <p class="help">{{ i18n.t('savings.result.real') }}</p>
+          }
+        </article>
+      </app-stale-results>
+    </section>
+  </div>
+
+  <app-savings-chart />
+
+  <section class="block">
+    <p class="kicker">{{ i18n.t('savings.learn.kicker') }}</p>
+    <h2>{{ i18n.t('savings.learn.heading') }}</h2>
+    <div class="lessons">
+      @for (lesson of lessons; track lesson.title) {
+        <article>
+          <h3>{{ i18n.t(lesson.title) }}</h3>
+          <p>{{ i18n.t(lesson.body) }}</p>
+        </article>
+      }
+    </div>
+    <p class="print-omit">
+      <a class="method-link" routerLink="/epargne/methode">{{ i18n.t('method.link') }}</a>
+    </p>
+  </section>
+
+  <app-page-notes>
+    <p>{{ i18n.t('app.footer') }}</p>
+  </app-page-notes>
+</div>
+
+<app-formula-popover />

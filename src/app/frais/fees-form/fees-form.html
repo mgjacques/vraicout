@@ -1,0 +1,220 @@
+@if (mode() === 'live') {
+  @if (store.missing().length) {
+    <p-message severity="error">{{
+      i18n.t('fees.form.incomplete', { fields: missingLabel() })
+    }}</p-message>
+  }
+}
+
+@if (shows('savings')) {
+  <section class="group">
+    <h3>{{ i18n.t('fees.form.savings') }}</h3>
+    <label class="field" for="fees-initial">{{ i18n.t('fees.form.initial') }}</label>
+    <app-money-input
+      inputId="fees-initial"
+      [ngModel]="form().initialAmount"
+      (ngModelChange)="setInitial($event)"
+      [min]="limits.initialAmount.min"
+      [max]="limits.initialAmount.max"
+      [invalid]="invalid('amount')"
+    />
+    <label class="field" for="fees-monthly">{{ i18n.t('fees.form.monthly') }}</label>
+    <app-money-input
+      inputId="fees-monthly"
+      [ngModel]="form().monthlyContribution"
+      (ngModelChange)="setMonthly($event)"
+      [min]="limits.monthlyContribution.min"
+      [max]="limits.monthlyContribution.max"
+      [invalid]="invalid('amount')"
+    />
+    <p class="help">{{ i18n.t('fees.form.amountHelp') }}</p>
+    <label class="field" for="fees-years"
+      >{{ i18n.t('fees.form.years') }}<app-required-mark
+    /></label>
+    <app-number-input
+      inputId="fees-years"
+      [ngModel]="form().years"
+      (ngModelChange)="setYears($event)"
+      [min]="limits.years.min"
+      [max]="limits.years.max"
+      [invalid]="invalid('years')"
+      [maxFractionDigits]="0"
+      [suffix]="years()"
+    />
+    <p class="help">{{ i18n.t('fees.form.yearsHelp') }}</p>
+  </section>
+}
+
+@if (shows('portfolios')) {
+  <section class="group">
+    <h3>{{ i18n.t('fees.form.returnTitle') }}</h3>
+    <label class="field" for="fees-return"
+      >{{ i18n.t('fees.form.return') }}<app-required-mark
+    /></label>
+    <app-number-input
+      inputId="fees-return"
+      [ngModel]="returnPercent()"
+      (ngModelChange)="setReturn($event)"
+      [min]="limits.returnPercent.min"
+      [max]="limits.returnPercent.max"
+      [invalid]="invalid('return')"
+      [maxFractionDigits]="2"
+      [suffix]="percent()"
+    />
+    <p class="help">{{ i18n.t('fees.form.returnHelp') }}</p>
+  </section>
+
+  @for (id of ids; track id) {
+    <section class="group portfolio-group" [class.fee-b]="id === 'b'">
+      <h3>{{ portfolioTitle(id) }}</h3>
+      <label class="field" [for]="'fees-label-' + id">{{ i18n.t('fees.form.label') }}</label>
+      <input
+        pInputText
+        [id]="'fees-label-' + id"
+        [ngModel]="form().portfolios[id].label"
+        (ngModelChange)="setLabel(id, $event)"
+        maxlength="40"
+      />
+      <label class="field" [for]="'fees-mer-' + id"
+        >{{ i18n.t('fees.form.mer') }}<app-required-mark
+      /></label>
+      <app-number-input
+        [inputId]="'fees-mer-' + id"
+        [ngModel]="merPercent(id)"
+        (ngModelChange)="setMer(id, $event)"
+        [min]="limits.merPercent.min"
+        [max]="limits.merPercent.max"
+        [invalid]="invalid(id === 'a' ? 'merA' : 'merB')"
+        [maxFractionDigits]="2"
+        [suffix]="percent()"
+      />
+      <label class="field" [for]="'fees-advisor-' + id">{{ i18n.t('fees.form.advisor') }}</label>
+      <app-number-input
+        [inputId]="'fees-advisor-' + id"
+        [ngModel]="advisorPercent(id)"
+        (ngModelChange)="setAdvisor(id, $event)"
+        [min]="limits.advisorPercent.min"
+        [max]="limits.advisorPercent.max"
+        [maxFractionDigits]="2"
+        [suffix]="percent()"
+      />
+      @if (id === 'a') {
+        <p class="help"><app-rich-text [text]="i18n.t('fees.form.merHelp')" /></p>
+        <p class="help">{{ i18n.t('fees.form.advisorHelp') }}</p>
+      }
+    </section>
+  }
+}
+
+@if (shows('tax')) {
+  <section class="group">
+    <h3>{{ i18n.t('fees.form.taxTitle') }}</h3>
+    <label class="field" for="fees-account">{{ i18n.t('fees.form.account') }}</label>
+    <p-select
+      inputId="fees-account"
+      [options]="accountOptions()"
+      optionLabel="label"
+      optionValue="value"
+      [ngModel]="form().account"
+      (ngModelChange)="setAccount($event)"
+      appendTo="body"
+    />
+    <p class="help">{{ accountHelp() }}</p>
+    @if (form().account !== 'tfsa') {
+      <div class="reveal" animate.enter="reveal-in" animate.leave="reveal-out">
+        <div>
+          <label class="field" for="fees-tax-rate">{{ i18n.t('drawer.taxRate') }}</label>
+          <app-number-input
+            inputId="fees-tax-rate"
+            [ngModel]="taxPercent()"
+            (ngModelChange)="setTaxRate($event)"
+            [min]="limits.taxPercent.min"
+            [max]="limits.taxPercent.max"
+            [maxFractionDigits]="1"
+            [suffix]="percent()"
+          />
+          <p class="help">{{ i18n.t('drawer.taxRateHelp') }}</p>
+        </div>
+      </div>
+    }
+    @if (form().account === 'rrsp') {
+      <div class="reveal" animate.enter="reveal-in" animate.leave="reveal-out">
+        <div>
+          <label class="field" for="fees-tax-rate-later">{{ i18n.t('drawer.taxRateLater') }}</label>
+          <app-number-input
+            inputId="fees-tax-rate-later"
+            [ngModel]="taxLaterPercent()"
+            (ngModelChange)="setTaxRateLater($event)"
+            [min]="limits.taxPercent.min"
+            [max]="limits.taxPercent.max"
+            [maxFractionDigits]="1"
+            [suffix]="percent()"
+          />
+          <p class="help">{{ i18n.t('drawer.taxRateLaterHelp') }}</p>
+        </div>
+      </div>
+    }
+  </section>
+}
+
+@if (shows('retirement')) {
+  <section class="group">
+    <h3>{{ i18n.t('fees.form.retirement') }}</h3>
+    <div class="switch-row">
+      <p-toggleswitch
+        inputId="fees-drawdown"
+        [ngModel]="form().drawdown.enabled"
+        (ngModelChange)="setDrawdown($event)"
+      />
+      <label for="fees-drawdown">{{ i18n.t('fees.form.drawdown') }}</label>
+    </div>
+    <p class="help">{{ i18n.t('fees.form.drawdownHelp') }}</p>
+    @if (form().drawdown.enabled) {
+      <div class="reveal" animate.enter="reveal-in" animate.leave="reveal-out">
+        <div>
+          <label class="field" for="fees-drawdown-years"
+            >{{ i18n.t('fees.form.drawdownYears') }}<app-required-mark
+          /></label>
+          <app-number-input
+            inputId="fees-drawdown-years"
+            [ngModel]="form().drawdown.years"
+            (ngModelChange)="setDrawdownYears($event)"
+            [min]="limits.drawdownYears.min"
+            [max]="limits.drawdownYears.max"
+            [invalid]="invalid('drawdownYears')"
+            [maxFractionDigits]="0"
+            [suffix]="years()"
+          />
+        </div>
+      </div>
+    }
+  </section>
+
+  <section class="group">
+    <h3>{{ i18n.t('fees.form.inflationTitle') }}</h3>
+    <label class="field" for="fees-inflation">{{ i18n.t('drawer.inflation') }}</label>
+    <app-number-input
+      inputId="fees-inflation"
+      [ngModel]="inflationPercent()"
+      (ngModelChange)="setInflation($event)"
+      [min]="limits.inflationPercent.min"
+      [max]="limits.inflationPercent.max"
+      [maxFractionDigits]="2"
+      [suffix]="percent()"
+    />
+    <p class="help">{{ i18n.t('fees.form.inflationHelp') }}</p>
+    <div class="switch-row">
+      <p-toggleswitch
+        inputId="fees-real-dollars"
+        [ngModel]="form().realDollars"
+        (ngModelChange)="setRealDollars($event)"
+      />
+      <label for="fees-real-dollars">{{ i18n.t('drawer.realDollars') }}</label>
+    </div>
+    <p class="help">{{ i18n.t('drawer.realDollarsHelp') }}</p>
+  </section>
+}
+
+@if (mode() === 'live') {
+  <app-reset-button effect="fees.form.resetEffect" (confirmed)="reset()" />
+}

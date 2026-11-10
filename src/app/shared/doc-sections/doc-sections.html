@@ -1,0 +1,64 @@
+@for (section of sections(); track section.id) {
+  <section [id]="section.id" class="doc-section" [attr.aria-labelledby]="section.id + '-title'">
+    <h2 [id]="section.id + '-title'">{{ i18n.t(section.title) }}</h2>
+    @for (piece of section.pieces; track $index) {
+      @switch (piece.kind) {
+        @case ('text') {
+          <p><app-rich-text [text]="i18n.t(piece.text)" /></p>
+        }
+        @case ('list') {
+          <ul>
+            @for (item of piece.items; track item) {
+              <li><app-rich-text [text]="i18n.t(item)" /></li>
+            }
+          </ul>
+        }
+        @case ('mail') {
+          <p>
+            <a [href]="mailto">{{ address }}</a>
+          </p>
+        }
+        @case ('source') {
+          <p class="doc-source">
+            {{ i18n.t('method.source') }}
+            <a [href]="piece.url" target="_blank" rel="noopener noreferrer"
+              ><app-rich-text [text]="i18n.t(piece.text)"
+            /></a>
+          </p>
+        }
+        @case ('math') {
+          <div class="doc-math">
+            <ng-container *ngComponentOutlet="piece.formula" />
+          </div>
+          <dl class="doc-symbols">
+            @for (item of piece.symbols; track $index) {
+              <div>
+                <dt>
+                  <math>
+                    @if (item.sub) {
+                      <msub
+                        ><mi>{{ item.symbol }}</mi
+                        ><mi>{{ item.sub }}</mi></msub
+                      >
+                    } @else {
+                      <mi>{{ item.symbol }}</mi>
+                    }
+                  </math>
+                </dt>
+                <dd><app-rich-text [text]="i18n.t(item.text)" /></dd>
+              </div>
+            }
+          </dl>
+        }
+        @case ('link') {
+          <p>
+            <a [href]="piece.url" target="_blank" rel="noopener noreferrer"
+              ><app-rich-text [text]="i18n.t(piece.text)" />
+              <i class="pi pi-external-link" aria-hidden="true"></i
+            ></a>
+          </p>
+        }
+      }
+    }
+  </section>
+}

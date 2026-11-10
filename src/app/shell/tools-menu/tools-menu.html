@@ -1,0 +1,30 @@
+<button
+  type="button"
+  class="tools-trigger"
+  [class.active]="active()"
+  aria-haspopup="true"
+  [attr.aria-expanded]="open()"
+  (click)="toggle($event)"
+>
+  {{ i18n.t(group().label) }} <i class="pi pi-chevron-down" aria-hidden="true"></i>
+</button>
+
+@if (open()) {
+  <div class="tools-pop" animate.enter="data-pop-in">
+    <ul>
+      @for (tool of group().tools; track tool.path) {
+        <li>
+          <a
+            [routerLink]="tool.path"
+            routerLinkActive="active"
+            ariaCurrentWhenActive="page"
+            (click)="open.set(false)"
+          >
+            <i class="pi {{ tool.icon }}" aria-hidden="true"></i>
+            {{ i18n.t(tool.short) }}
+          </a>
+        </li>
+      }
+    </ul>
+  </div>
+}

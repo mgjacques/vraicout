@@ -1,0 +1,14 @@
+<article class="chart-card">
+  <h2>{{ title() }}</h2>
+  <p class="help">{{ subtitle() }}</p>
+  <div class="chart-frame">
+    <p-chart
+      type="line"
+      [data]="data()"
+      [options]="options()"
+      [plugins]="plugins"
+      [ariaLabel]="aria()"
+      height="300"
+    />
+  </div>
+</article>

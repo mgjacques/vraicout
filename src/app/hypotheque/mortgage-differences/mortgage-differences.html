@@ -1,0 +1,32 @@
+<section class="block">
+  <p class="kicker">{{ i18n.t('mortgage.diff.kicker') }}</p>
+  <h2>{{ i18n.t('mortgage.diff.heading') }}</h2>
+  <p class="help">{{ i18n.t('mortgage.diff.intro') }}</p>
+  <div class="mortgage-diff">
+    <table>
+      <thead>
+        <tr>
+          <td></td>
+          <th scope="col" class="term">{{ i18n.t('mortgage.option.term') }}</th>
+          <th scope="col" class="bank">{{ i18n.t('mortgage.option.bank') }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows; track row.title) {
+          <tr>
+            <th scope="row">{{ i18n.t(row.title) }}</th>
+            <td [attr.data-label]="i18n.t('mortgage.option.term')">{{ i18n.t(row.term) }}</td>
+            <td [attr.data-label]="i18n.t('mortgage.option.bank')">
+              <app-rich-text [text]="i18n.t(row.bank)" />
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <ul class="mortgage-notes">
+    @for (note of notes; track note) {
+      <li><app-rich-text [text]="i18n.t(note)" /></li>
+    }
+  </ul>
+</section>

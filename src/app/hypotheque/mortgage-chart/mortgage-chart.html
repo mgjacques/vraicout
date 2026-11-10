@@ -1,0 +1,16 @@
+<section class="block">
+  <article class="chart-card">
+    <h2>{{ i18n.t('mortgage.chart.title') }}</h2>
+    <p class="help">{{ i18n.t('mortgage.chart.sub') }}</p>
+    <div class="chart-frame">
+      <p-chart
+        type="line"
+        [data]="data()"
+        [options]="options()"
+        [plugins]="plugins"
+        [ariaLabel]="i18n.t('mortgage.chart.aria')"
+        height="320"
+      />
+    </div>
+  </article>
+</section>

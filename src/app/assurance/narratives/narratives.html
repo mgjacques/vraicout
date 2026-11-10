@@ -1,0 +1,83 @@
+<section class="block">
+  <p class="kicker">{{ i18n.t('section.narrative') }}</p>
+  <h2>{{ i18n.t('narrative.heading') }}</h2>
+
+  <article class="story keep">
+    <h3>{{ i18n.t('narrative.keepTitle') }}</h3>
+    <div class="cols">
+      <div>
+        <p class="plus">{{ i18n.t('narrative.pros') }}</p>
+        <ul>
+          <li>{{ i18n.t('keep.pro.1') }}</li>
+          <li>{{ i18n.t('keep.pro.2', { face: facts().face }) }}</li>
+          <li>
+            {{
+              facts().paidUpDone
+                ? i18n.t('keep.pro.3done')
+                : i18n.t('keep.pro.3', { paidUpAge: facts().paidUpAge })
+            }}
+          </li>
+          <li>{{ facts().growth ? i18n.t('keep.pro.growth') : i18n.t('keep.pro.nogrowth') }}</li>
+        </ul>
+      </div>
+      <div>
+        <p class="minus">{{ i18n.t('narrative.cons') }}</p>
+        <ul>
+          <li>{{ i18n.t('keep.con.1') }}</li>
+          <li>{{ facts().cashScale ? i18n.t('keep.con.2scale') : i18n.t('keep.con.2') }}</li>
+          <li>{{ i18n.t('keep.con.3') }}</li>
+        </ul>
+      </div>
+    </div>
+    <div class="access">
+      <h4>{{ i18n.t('narrative.accessTitle') }}</h4>
+      <ul>
+        <li>{{ i18n.t('access.1') }}</li>
+        <li>{{ i18n.t('access.2') }}</li>
+        <li><app-rich-text [text]="i18n.t('access.3')" /></li>
+      </ul>
+      <p>{{ i18n.t('access.contrast') }}</p>
+    </div>
+  </article>
+
+  <article class="story term">
+    <h3>{{ i18n.t('narrative.termTitle') }}</h3>
+    <div class="cols">
+      <div>
+        <p class="plus">{{ i18n.t('narrative.pros') }}</p>
+        <ul>
+          <li>
+            {{ i18n.t('term.pro.1', { termYears: facts().termYears, termFace: facts().termFace }) }}
+          </li>
+          <li>{{ i18n.t('term.pro.2', { termEndAge: facts().termEndAge }) }}</li>
+          <li>{{ i18n.t('term.pro.3') }}</li>
+          <li>{{ i18n.t('term.pro.4') }}</li>
+        </ul>
+      </div>
+      <div>
+        <p class="minus">{{ i18n.t('narrative.cons') }}</p>
+        <ul>
+          <li>{{ i18n.t('term.con.1', { termEndAge: facts().termEndAge }) }}</li>
+          <li><app-rich-text [text]="i18n.t('term.con.2', { reinvest: facts().reinvest })" /></li>
+          <li>{{ i18n.t('term.con.3') }}</li>
+          <li>{{ i18n.t('term.con.4') }}</li>
+        </ul>
+      </div>
+    </div>
+    <div class="access">
+      <h4>{{ i18n.t('after.title', { termEndAge: facts().termEndAge }) }}</h4>
+      <p>{{ i18n.t('after.need') }}</p>
+      @if (afterTerm(); as ratio) {
+        <p>{{ ratio }}</p>
+      }
+      <p>{{ i18n.t('after.options') }}</p>
+      <ul>
+        <li>{{ i18n.t('after.renew') }}</li>
+        <li>{{ i18n.t('after.convert') }}</li>
+        <li>{{ i18n.t('after.new') }}</li>
+      </ul>
+    </div>
+  </article>
+
+  <p-message severity="warn"><app-rich-text [text]="i18n.t('narrative.sequence')" /></p-message>
+</section>

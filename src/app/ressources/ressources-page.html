@@ -1,0 +1,48 @@
+<div class="wrap narrow">
+  <header class="mast">
+    <h1>{{ i18n.t('resources.title') }}</h1>
+    <p class="lede">{{ i18n.t('resources.lede') }}</p>
+  </header>
+
+  <app-warning variant="resources" />
+
+  <nav class="resource-contents" [attr.aria-label]="i18n.t('resources.contents')">
+    <ul>
+      @for (section of sections; track section.id) {
+        <li>
+          <a routerLink="." [fragment]="section.id">{{ i18n.t(section.title) }}</a>
+        </li>
+      }
+    </ul>
+  </nav>
+
+  @for (section of sections; track section.id) {
+    <section [id]="section.id" class="doc-section" [attr.aria-labelledby]="section.id + '-title'">
+      <h2 [id]="section.id + '-title'">{{ i18n.t(section.title) }}</h2>
+      <ul class="resource-list">
+        @for (entry of section.entries; track entry.url) {
+          <li>
+            <a [href]="entry.url" target="_blank" rel="noopener noreferrer" [attr.lang]="entry.lang"
+              >{{ i18n.t(entry.title) }} <i class="pi pi-external-link" aria-hidden="true"></i
+            ></a>
+            @if (entry.by; as by) {
+              <span class="resource-by">{{ i18n.t(by) }}</span>
+            }
+            <p class="resource-about"><app-rich-text [text]="i18n.t(entry.about)" /></p>
+            @if (section.mixedLanguages && entry.lang === 'en') {
+              <p class="help">{{ i18n.t('resources.inEnglish') }}</p>
+            }
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
+  <section id="details-et-sources" class="doc-section" aria-labelledby="details-et-sources-title">
+    <h2 id="details-et-sources-title">{{ i18n.t('method.title') }}</h2>
+    <p>{{ i18n.t('resources.sources.body') }}</p>
+    <p>
+      <a routerLink="/sources">{{ i18n.t('resources.sources.link') }}</a>
+    </p>
+  </section>
+</div>

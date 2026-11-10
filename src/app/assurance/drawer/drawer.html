@@ -1,0 +1,481 @@
+@if (mode() === 'live' && store.missing().length) {
+  <p-message severity="error">{{
+    mode() === 'live'
+      ? i18n.t('drawer.incomplete', { fields: missingLabel() })
+      : i18n.t('profile.missing', { fields: missingLabel() })
+  }}</p-message>
+}
+
+@if (shows('profile')) {
+  <section class="group">
+    <h3>{{ i18n.t('drawer.profile') }}</h3>
+    <p-selectbutton
+      class="unit-switch"
+      [options]="ageByOptions()"
+      optionLabel="label"
+      optionValue="value"
+      [allowEmpty]="false"
+      [ngModel]="form().profile.ageBy"
+      (ngModelChange)="setAgeBy($event)"
+      [ariaLabel]="i18n.t('drawer.ageBy')"
+    />
+    @if (form().profile.ageBy === 'age') {
+      <label class="field" for="age">{{ i18n.t('drawer.age') }}<app-required-mark /></label>
+      <app-number-input
+        inputId="age"
+        [ngModel]="form().profile.currentAge"
+        (ngModelChange)="setAge($event)"
+        [invalid]="invalid('age')"
+        [min]="limits.age.min"
+        [max]="limits.age.max"
+        [maxFractionDigits]="0"
+        [suffix]="years()"
+      />
+    } @else {
+      <label class="field" for="age">{{ i18n.t('drawer.birthYear') }}<app-required-mark /></label>
+      <app-number-input
+        inputId="age"
+        [ngModel]="form().profile.birthYear"
+        (ngModelChange)="setBirthYear($event)"
+        [invalid]="invalid('age')"
+        [min]="year - limits.age.max"
+        [max]="year - limits.age.min"
+        [grouping]="false"
+        [maxFractionDigits]="0"
+      />
+      @if (birthYearNote()) {
+        <p class="help">{{ birthYearNote() }}</p>
+      }
+    }
+  </section>
+}
+
+@if (shows('permanent')) {
+  <section class="group">
+    <h3>{{ i18n.t('drawer.permanent') }}</h3>
+    <span class="field" id="in-force">{{ i18n.t('drawer.inForce') }}</span>
+    <p-selectbutton
+      [options]="inForceOptions()"
+      optionLabel="label"
+      optionValue="value"
+      [allowEmpty]="false"
+      [ngModel]="form().permanent.inForce"
+      (ngModelChange)="setInForce($event)"
+      ariaLabelledBy="in-force"
+    />
+    <p class="help">{{ i18n.t('drawer.inForceHelp') }}</p>
+
+    <label class="field" for="premium">{{ i18n.t('drawer.premium') }}<app-required-mark /></label>
+    <app-money-input
+      inputId="premium"
+      [ngModel]="form().permanent.premium"
+      (ngModelChange)="setPremium($event)"
+      [min]="limits.premium.min"
+      [max]="limits.premium.max"
+      [invalid]="invalid('premium')"
+    />
+    <p class="help">{{ i18n.t('drawer.premiumHelp') }}</p>
+
+    <label class="field" for="period">{{ i18n.t('drawer.periodicity') }}</label>
+    <p-select
+      inputId="period"
+      [options]="periodicityOptions()"
+      optionLabel="label"
+      optionValue="value"
+      [ngModel]="form().permanent.periodicity"
+      (ngModelChange)="setPeriod($event)"
+      appendTo="body"
+    />
+
+    <label class="field" for="face">{{ i18n.t('drawer.deathBenefit') }}<app-required-mark /></label>
+    <app-money-input
+      inputId="face"
+      [ngModel]="form().permanent.deathBenefit"
+      (ngModelChange)="setFace($event)"
+      [min]="limits.deathBenefit.min"
+      [max]="limits.deathBenefit.max"
+      [invalid]="invalid('face')"
+      [maxFractionDigits]="0"
+    />
+    <p class="help">{{ i18n.t('drawer.deathBenefitHelp') }}</p>
+
+    @if (form().permanent.inForce) {
+      <label class="field" for="cash">{{ i18n.t('drawer.cashNow') }}</label>
+      <app-money-input
+        inputId="cash"
+        [ngModel]="form().permanent.cashValueNow"
+        (ngModelChange)="setCash($event)"
+        [min]="limits.cashValue.min"
+        [max]="limits.cashValue.max"
+      />
+      <p class="help"><app-rich-text [text]="i18n.t('drawer.cashHelp')" /></p>
+    }
+
+    <label class="field" for="years"
+      >{{ i18n.t('drawer.premiumYears') }}<app-required-mark
+    /></label>
+    <app-number-input
+      inputId="years"
+      [ngModel]="form().permanent.premiumYearsRemaining"
+      (ngModelChange)="setPremiumYears($event)"
+      [min]="limits.premiumYears.min"
+      [max]="limits.premiumYears.max"
+      [invalid]="invalid('years')"
+      [maxFractionDigits]="0"
+      [suffix]="years()"
+    />
+    <p class="help">{{ i18n.t('drawer.premiumYearsHelp') }}</p>
+
+    <label class="field" for="growth">{{ i18n.t('drawer.growth') }}</label>
+    <app-number-input
+      inputId="growth"
+      [ngModel]="growthPercent()"
+      (ngModelChange)="setGrowth($event)"
+      [min]="limits.growthPercent.min"
+      [max]="limits.growthPercent.max"
+      [maxFractionDigits]="2"
+      [suffix]="percent()"
+    />
+    <p class="help">{{ i18n.t('drawer.growthHelp') }}</p>
+  </section>
+}
+
+@if (shows('anchors')) {
+  <section class="group">
+    <h3>{{ i18n.t('drawer.anchors') }}</h3>
+    <p class="help">{{ i18n.t('drawer.anchorsHelp') }}</p>
+
+    <p-panel
+      class="guide"
+      [header]="i18n.t('guide.title')"
+      [toggleable]="true"
+      [collapsed]="mode() === 'live'"
+    >
+      <p class="help">{{ i18n.t('guide.intro') }}</p>
+      <h4 class="guide-group use">{{ i18n.t('guide.use') }}</h4>
+      <dl>
+        @for (item of guideUse; track item) {
+          <dt>{{ i18n.t(item.title) }}</dt>
+          <dd>
+            @if (item.where) {
+              <strong>{{ i18n.t(item.where) }}</strong>
+            }
+            <app-rich-text [text]="i18n.t(item.body)" />
+            @if (item.aka) {
+              <span class="aka"><app-rich-text [text]="i18n.t(item.aka)" /></span>
+            }
+          </dd>
+        }
+      </dl>
+      <h4 class="guide-group skip">{{ i18n.t('guide.skip') }}</h4>
+      <dl>
+        @for (item of guideSkip; track item) {
+          <dt>{{ i18n.t(item.title) }}</dt>
+          <dd>
+            <app-rich-text [text]="i18n.t(item.body)" />
+            @if (item.aka) {
+              <span class="aka"><app-rich-text [text]="i18n.t(item.aka)" /></span>
+            }
+          </dd>
+        }
+      </dl>
+      <p class="help">{{ i18n.t('guide.rows') }}</p>
+    </p-panel>
+
+    <label class="field" id="anchors-by">{{ i18n.t('drawer.anchorsBy') }}</label>
+    <p-selectbutton
+      class="unit-switch"
+      [options]="anchorsByOptions()"
+      optionLabel="label"
+      optionValue="value"
+      [allowEmpty]="false"
+      [ngModel]="anchorsBy()"
+      (ngModelChange)="setAnchorsBy($event)"
+      ariaLabelledBy="anchors-by"
+    />
+    <p class="help">{{ anchorsByHelp() }}</p>
+    @if (anchorsBy() === 'policyYear') {
+      <div class="reveal" animate.enter="reveal-in" animate.leave="reveal-out">
+        <div>
+          <label class="field" for="contract-start"
+            >{{ i18n.t('drawer.contractStart') }}<app-required-mark
+          /></label>
+          <app-number-input
+            inputId="contract-start"
+            [ngModel]="form().permanent.contractStartYear"
+            (ngModelChange)="setContractStart($event)"
+            [invalid]="invalid('contractStart')"
+            [min]="year - 100"
+            [max]="year"
+            [grouping]="false"
+            [maxFractionDigits]="0"
+          />
+          <p class="help">{{ i18n.t('drawer.contractStartHelp') }}</p>
+        </div>
+      </div>
+    }
+
+    @for (anchor of form().permanent.anchors; track $index) {
+      <div class="anchor">
+        <label class="field" [attr.for]="'anchor-at-' + $index">{{ anchorLabel() }}</label>
+        <app-number-input
+          [inputId]="'anchor-at-' + $index"
+          [ngModel]="anchor.pendingAge === undefined ? anchor.at : null"
+          (ngModelChange)="setAnchorAt($index, $event)"
+          [invalid]="anchorPast(anchor)"
+          [min]="anchorRange().min"
+          [max]="anchorRange().max"
+          [grouping]="false"
+          [maxFractionDigits]="0"
+          [suffix]="anchorSuffix()"
+        />
+        @if (anchorPast(anchor)) {
+          <p class="help error">{{ i18n.t('drawer.anchorPast') }}</p>
+        } @else if (anchorAgeNote(anchor)) {
+          <p class="help">{{ anchorAgeNote(anchor) }}</p>
+        }
+        <label class="field" [attr.for]="'anchor-g-' + $index">{{
+          i18n.t('drawer.anchorGuaranteed')
+        }}</label>
+        <app-money-input
+          [inputId]="'anchor-g-' + $index"
+          [ngModel]="anchor.guaranteed"
+          (ngModelChange)="setAnchorGuaranteed($index, $event)"
+          [min]="limits.cashValue.min"
+          [max]="limits.cashValue.max"
+        />
+        <label class="field" [attr.for]="'anchor-p-' + $index">{{
+          i18n.t('drawer.anchorProjected')
+        }}</label>
+        <app-money-input
+          [inputId]="'anchor-p-' + $index"
+          [ngModel]="anchor.projected"
+          (ngModelChange)="setAnchorProjected($index, $event)"
+          [min]="limits.cashValue.min"
+          [max]="limits.cashValue.max"
+        />
+        <p-button
+          [label]="i18n.t('drawer.removeAnchor')"
+          severity="secondary"
+          [text]="true"
+          (onClick)="removeAnchor($index)"
+        />
+      </div>
+    }
+    <p-button [label]="i18n.t('drawer.addAnchor')" [outlined]="true" (onClick)="addAnchor()" />
+  </section>
+}
+
+@if (shows('term')) {
+  <section class="group">
+    <h3>{{ i18n.t('drawer.term') }}</h3>
+    <label class="field" for="term-premium"
+      >{{ i18n.t('drawer.termPremium') }}<app-required-mark
+    /></label>
+    <app-money-input
+      inputId="term-premium"
+      [ngModel]="form().term.premium"
+      (ngModelChange)="setTermPremium($event)"
+      [min]="limits.premium.min"
+      [max]="limits.premium.max"
+      [invalid]="invalid('termPremium')"
+    />
+
+    <label class="field" for="term-period">{{ i18n.t('drawer.termPeriodicity') }}</label>
+    <p-select
+      inputId="term-period"
+      [options]="periodicityOptions()"
+      optionLabel="label"
+      optionValue="value"
+      [ngModel]="form().term.periodicity"
+      (ngModelChange)="setTermPeriod($event)"
+      appendTo="body"
+    />
+
+    <label class="field" for="term-face"
+      >{{ i18n.t('drawer.termDeath') }}<app-required-mark
+    /></label>
+    <app-money-input
+      inputId="term-face"
+      [ngModel]="form().term.deathBenefit"
+      (ngModelChange)="setTermFace($event)"
+      [min]="limits.deathBenefit.min"
+      [max]="limits.deathBenefit.max"
+      [invalid]="invalid('termFace')"
+      [maxFractionDigits]="0"
+    />
+
+    <label class="field" for="duration">{{ i18n.t('drawer.termDuration') }}</label>
+    <p-select
+      inputId="duration"
+      [options]="durationOptions()"
+      optionLabel="label"
+      optionValue="value"
+      [ngModel]="form().term.durationYears"
+      (ngModelChange)="setDuration($event)"
+      appendTo="body"
+    />
+  </section>
+}
+
+@if (shows('params')) {
+  <section class="group">
+    <h3>{{ i18n.t('drawer.params') }}</h3>
+    <label class="field" id="return"
+      >{{ i18n.t('drawer.return') }} : {{ formatPercent(returnPercent()) }}</label
+    >
+    <p-slider
+      class="risk-slider"
+      [ngModel]="returnPercent()"
+      (ngModelChange)="setReturn($event)"
+      [min]="0"
+      [max]="10"
+      [step]="0.1"
+      ariaLabelledBy="return"
+    />
+    <p class="help">{{ i18n.t('drawer.returnHelp') }}</p>
+    <div class="risk-ends" aria-hidden="true">
+      <span>{{ i18n.t('drawer.riskConservative') }}</span
+      ><span>{{ i18n.t('drawer.riskRisky') }}</span>
+    </div>
+    <div class="markers" role="group" [attr.aria-label]="i18n.t('drawer.markers')">
+      <span class="markers-label">{{ i18n.t('drawer.markers') }}</span>
+      @for (marker of markers(); track marker.value) {
+        <p-button
+          [label]="marker.label"
+          size="small"
+          [outlined]="returnPercent() !== marker.value"
+          [severity]="returnPercent() === marker.value ? 'primary' : 'secondary'"
+          (onClick)="setReturn(marker.value)"
+        />
+      }
+    </div>
+
+    <label class="field" id="reinvest"
+      >{{ i18n.t('drawer.reinvest') }} : {{ formatPercent(reinvestPercent()) }}</label
+    >
+    <p-slider
+      [ngModel]="reinvestPercent()"
+      (ngModelChange)="setReinvest($event)"
+      [min]="0"
+      [max]="100"
+      [step]="5"
+      ariaLabelledBy="reinvest"
+    />
+    <p class="help">{{ i18n.t('drawer.reinvestHelp') }}</p>
+    @if (phases().length) {
+      <ul class="summary">
+        @for (phase of phases(); track $index) {
+          <li>{{ phase }}</li>
+        }
+      </ul>
+    }
+
+    <label class="field" for="extra">{{ i18n.t('drawer.extra') }}</label>
+    <app-money-input
+      inputId="extra"
+      [ngModel]="form().params.extraSavingsMonthly"
+      (ngModelChange)="setExtra($event)"
+      [min]="limits.extraSavings.min"
+      [max]="limits.extraSavings.max"
+    />
+    <p class="help">{{ i18n.t('drawer.extraHelp') }}</p>
+
+    <label class="field" for="account">{{ i18n.t('drawer.account') }}</label>
+    <p-select
+      inputId="account"
+      [options]="accountOptions()"
+      optionLabel="label"
+      optionValue="value"
+      [ngModel]="form().params.account"
+      (ngModelChange)="setAccount($event)"
+      appendTo="body"
+    />
+    <p class="help">{{ accountHelp() }}</p>
+    @if (form().params.account !== 'tfsa') {
+      <div class="reveal" animate.enter="reveal-in" animate.leave="reveal-out">
+        <div>
+          <label class="field" for="tax-rate">{{ i18n.t('drawer.taxRate') }}</label>
+          <app-number-input
+            inputId="tax-rate"
+            [ngModel]="taxPercent()"
+            (ngModelChange)="setTaxRate($event)"
+            [min]="limits.taxPercent.min"
+            [max]="limits.taxPercent.max"
+            [maxFractionDigits]="1"
+            [suffix]="percent()"
+          />
+          <p class="help">{{ i18n.t('drawer.taxRateHelp') }}</p>
+        </div>
+      </div>
+    }
+    @if (form().params.account === 'rrsp') {
+      <div class="reveal" animate.enter="reveal-in" animate.leave="reveal-out">
+        <div>
+          <label class="field" for="tax-rate-later">{{ i18n.t('drawer.taxRateLater') }}</label>
+          <app-number-input
+            inputId="tax-rate-later"
+            [ngModel]="taxLaterPercent()"
+            (ngModelChange)="setTaxRateLater($event)"
+            [min]="limits.taxPercent.min"
+            [max]="limits.taxPercent.max"
+            [maxFractionDigits]="1"
+            [suffix]="percent()"
+          />
+          <p class="help">{{ i18n.t('drawer.taxRateLaterHelp') }}</p>
+        </div>
+      </div>
+    }
+    <p class="help">{{ i18n.t('drawer.accountNote') }}</p>
+  </section>
+}
+
+@if (shows('display')) {
+  <section class="group">
+    <h3>{{ i18n.t('drawer.display') }}</h3>
+    <label class="field" for="horizon">{{ i18n.t('drawer.horizon') }}</label>
+    <app-number-input
+      inputId="horizon"
+      [ngModel]="form().profile.horizonAge"
+      (ngModelChange)="setHorizon($event)"
+      [min]="limits.horizonAge.min"
+      [max]="limits.horizonAge.max"
+      [maxFractionDigits]="0"
+      [suffix]="years()"
+    />
+    <p class="help">{{ i18n.t('drawer.horizonHelp') }}</p>
+    @if (horizonNote()) {
+      <p class="help">{{ horizonNote() }}</p>
+    }
+    <div class="switch-row">
+      <p-toggleswitch
+        inputId="real-dollars"
+        [ngModel]="form().params.realDollars"
+        (ngModelChange)="setRealDollars($event)"
+      />
+      <label for="real-dollars">{{ i18n.t('drawer.realDollars') }}</label>
+    </div>
+    <p class="help">{{ i18n.t('drawer.realDollarsHelp') }}</p>
+    @if (form().params.realDollars) {
+      <div class="reveal" animate.enter="reveal-in" animate.leave="reveal-out">
+        <div>
+          <label class="field" for="inflation">{{ i18n.t('drawer.inflation') }}</label>
+          <app-number-input
+            inputId="inflation"
+            [ngModel]="inflationPercent()"
+            (ngModelChange)="setInflation($event)"
+            [min]="limits.inflationPercent.min"
+            [max]="limits.inflationPercent.max"
+            [maxFractionDigits]="2"
+            [suffix]="percent()"
+          />
+          <p class="help">{{ i18n.t('drawer.inflationHelp') }}</p>
+        </div>
+      </div>
+    }
+  </section>
+}
+
+@if (mode() === 'live') {
+  <app-reset-button effect="drawer.resetEffect" (confirmed)="reset()" />
+}

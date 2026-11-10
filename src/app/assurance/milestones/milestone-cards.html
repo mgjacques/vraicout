@@ -1,0 +1,140 @@
+<section class="block">
+  <p class="kicker">{{ i18n.t('section.compare') }}</p>
+
+  <div class="age-picker">
+    <label class="field" for="insurance-age">{{ i18n.t('focus.pick') }}</label>
+    <p-inputnumber
+      inputId="insurance-age"
+      [ngModel]="focus().age"
+      (ngModelChange)="setAge($event)"
+      [showButtons]="true"
+      buttonLayout="horizontal"
+      [min]="minAge()"
+      [max]="maxAge()"
+      [maxFractionDigits]="0"
+      [suffix]="i18n.t('unit.years')"
+      incrementButtonIcon="pi pi-plus"
+      decrementButtonIcon="pi pi-minus"
+    />
+    <div class="moments" role="group" [attr.aria-label]="i18n.t('focus.shortcuts')">
+      @for (shortcut of shortcuts(); track shortcut.age) {
+        <p-button
+          size="small"
+          [label]="shortcut.label"
+          [outlined]="focus().age !== shortcut.age"
+          [severity]="focus().age === shortcut.age ? 'primary' : 'secondary'"
+          (onClick)="setAge(shortcut.age)"
+        />
+      }
+    </div>
+    @if (detail()) {
+      <p class="help">{{ detail() }}</p>
+    }
+  </div>
+
+  <div class="versus-wrap" aria-live="polite">
+    <table class="versus">
+      <caption>
+        {{
+          title()
+        }}
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col" class="keep">{{ i18n.t('scenario.keep') }}</th>
+          <th scope="col" class="term">{{ i18n.t('scenario.term') }}</th>
+        </tr>
+      </thead>
+      <tbody class="row-cost">
+        <tr class="row-head">
+          <th scope="colgroup" colspan="2">{{ i18n.t('compare.cost') }}</th>
+        </tr>
+        <tr>
+          <td><app-figure [money]="keep().cost" /></td>
+          <td><app-figure [money]="term().cost" /></td>
+        </tr>
+        <tr class="gap">
+          <td colspan="2">{{ costGap().text }}</td>
+        </tr>
+      </tbody>
+      <tbody class="row-death">
+        <tr class="row-head">
+          <th scope="colgroup" colspan="2">{{ i18n.t('compare.death') }}</th>
+        </tr>
+        <tr>
+          <td>
+            <app-figure [money]="keep().forHeirs" />
+            @if (keepDeathParts()) {
+              <p class="sub">{{ keepDeathParts() }}</p>
+            }
+            @if (keep().forHeirsProjected; as projected) {
+              <p class="sub">
+                {{ i18n.t('compare.deathProjected') }} <app-figure [money]="projected" />
+              </p>
+            }
+          </td>
+          <td>
+            <app-figure [money]="term().forHeirs" />
+            @if (termDeathParts()) {
+              <p class="sub">{{ termDeathParts() }}</p>
+            }
+            @if (term().deathBenefit.value === 0) {
+              <p class="sub">{{ i18n.t('compare.termEnded') }}</p>
+            }
+          </td>
+        </tr>
+        <tr class="gap">
+          <td colspan="2">{{ deathGap().text }}</td>
+        </tr>
+      </tbody>
+      <tbody class="row-alive">
+        <tr class="row-head">
+          <th scope="colgroup" colspan="2">{{ i18n.t('compare.alive') }}</th>
+        </tr>
+        <tr>
+          <td>
+            <app-figure [money]="keep().inHand" />
+            <p class="sub">{{ i18n.t('compare.aliveKeep') }}</p>
+            @if (keepAliveParts()) {
+              <p class="sub">{{ keepAliveParts() }}</p>
+            }
+            @if (keep().aliveGuaranteed; as guaranteed) {
+              <p class="sub">
+                {{ i18n.t('compare.aliveGuaranteed') }} <app-figure [money]="guaranteed" />
+              </p>
+            } @else if (keep().alive.value > 0) {
+              <p class="sub">{{ i18n.t('compare.aliveGuaranteedUnknown') }}</p>
+            }
+            @if (cashLine()) {
+              <p class="sub">{{ cashLine() }}</p>
+            }
+          </td>
+          <td>
+            <app-figure [money]="term().inHand" />
+            <p class="sub">{{ termAliveHelp() }}</p>
+          </td>
+        </tr>
+        <tr class="gap">
+          <td colspan="2">{{ aliveGap().text }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    @if (breakEven()) {
+      <p class="even">{{ breakEven() }}</p>
+    }
+    @if (showExtra()) {
+      <p class="extra-line">
+        {{ i18n.t('summary.extra') }} <app-figure [money]="keep().extraSavings" />
+      </p>
+    }
+    <div class="to-know">
+      <h3>{{ i18n.t('summary.notesTitle') }}</h3>
+      <ul>
+        @for (note of notes(); track note) {
+          <li>{{ note }}</li>
+        }
+      </ul>
+    </div>
+  </div>
+</section>

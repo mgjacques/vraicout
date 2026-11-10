@@ -1,0 +1,31 @@
+<p-dialog
+  class="data-dialog"
+  [visible]="visible()"
+  (visibleChange)="visible.set($event)"
+  [modal]="true"
+  [dismissableMask]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [header]="i18n.t('data.dialog.title')"
+  [style]="{ width: 'min(30rem, calc(100vw - 2rem))' }"
+>
+  <p class="data-where">
+    <i class="pi pi-lock" aria-hidden="true"></i>
+    <span>{{ i18n.t('data.dialog.where') }}</span>
+  </p>
+  <p>{{ i18n.t('data.dialog.effect') }}</p>
+  <ng-template #footer>
+    <p-button
+      [label]="i18n.t('data.dialog.cancel')"
+      severity="secondary"
+      [text]="true"
+      (onClick)="visible.set(false)"
+    />
+    <p-button
+      [label]="i18n.t('data.dialog.confirm')"
+      icon="pi pi-trash"
+      severity="danger"
+      (onClick)="clear()"
+    />
+  </ng-template>
+</p-dialog>

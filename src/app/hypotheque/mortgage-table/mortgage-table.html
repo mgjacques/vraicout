@@ -1,0 +1,38 @@
+<section class="block">
+  <p-panel
+    class="guide"
+    [header]="i18n.t('mortgage.table.heading')"
+    [toggleable]="true"
+    [collapsed]="true"
+  >
+    <p class="help">{{ i18n.t('mortgage.table.intro') }}</p>
+    <div class="fees-table mortgage-table">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">{{ i18n.t('mortgage.table.year') }}</th>
+            <th scope="col" class="bank">{{ i18n.t('mortgage.table.balance') }}</th>
+            @for (column of termColumns(); track column.id) {
+              <th scope="col" class="term">{{ column.label }}</th>
+            }
+            <th scope="col" class="term">{{ i18n.t('mortgage.table.paidTerm') }}</th>
+            <th scope="col" class="bank">{{ i18n.t('mortgage.table.paidBank') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of projection().rows; track row.year) {
+            <tr>
+              <th scope="row">{{ row.year }}</th>
+              <td>{{ money(row.balance) }}</td>
+              @for (column of termColumns(); track column.id) {
+                <td>{{ money(row.term[column.id]) }}</td>
+              }
+              <td>{{ money(row.premiums.term) }}</td>
+              <td>{{ money(row.premiums.bank) }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </p-panel>
+</section>

@@ -1,0 +1,100 @@
+<div
+  class="workspace"
+  [class.has-sidebar]="wide()"
+  [class.sidebar-collapsed]="wide() && collapsed()"
+>
+  @if (wide()) {
+    <aside class="sidebar">
+      <div class="sidebar-head">
+        <button
+          type="button"
+          class="sidebar-toggle"
+          (click)="toggleSidebar()"
+          [attr.aria-expanded]="!collapsed()"
+        >
+          <i
+            class="pi"
+            [class.pi-angle-left]="!collapsed()"
+            [class.pi-sliders-h]="collapsed()"
+            aria-hidden="true"
+          ></i>
+          <span class="visually-hidden">{{
+            collapsed() ? i18n.t('sidebar.expand') : i18n.t('sidebar.collapse')
+          }}</span>
+        </button>
+        <app-print-button />
+      </div>
+      @if (!collapsed()) {
+        <div class="sidebar-scroll" animate.enter="sidebar-in" animate.leave="sidebar-out">
+          <h2>{{ i18n.t('drawer.title') }}</h2>
+          <app-mortgage-form />
+        </div>
+      }
+    </aside>
+  }
+
+  <div class="wrap">
+    <header class="mast">
+      <app-tool-breadcrumb tool="/hypotheque" />
+      <h1>{{ i18n.t('mortgage.title') }}</h1>
+      <p class="lede">{{ i18n.t('mortgage.lede') }}</p>
+      <app-tool-links method="/hypotheque/methode" intro="/hypotheque/introduction" />
+      <div class="chips">
+        @for (chip of chips(); track $index) {
+          <p-chip class="assumption" [label]="chip" />
+        }
+      </div>
+    </header>
+
+    <app-page-contents [items]="contents" />
+
+    <app-warning variant="insurance" />
+    <app-mortgage-print-params data-print="params" />
+
+    <app-stale-results [stale]="store.missing().length > 0">
+      <app-mortgage-summary id="resultat" data-print="summary" />
+      <app-mortgage-chart id="graphique" data-print="chart" />
+      <app-mortgage-differences id="differences" data-print="differences" />
+      <app-mortgage-pedagogy id="comprendre" data-print="pedagogy" />
+      <app-mortgage-table id="annee-par-annee" data-print="table" />
+    </app-stale-results>
+
+    <app-page-notes>
+      <p>{{ i18n.t('app.footer') }}</p>
+      <p>{{ i18n.t('mortgage.footer') }}</p>
+    </app-page-notes>
+  </div>
+</div>
+
+@if (!wide()) {
+  <p-drawer
+    [visible]="drawerOpen()"
+    (visibleChange)="drawerOpen.set($event)"
+    position="right"
+    [ariaCloseLabel]="i18n.t('drawer.close')"
+    [blockScroll]="true"
+    [style]="{ width: 'min(28rem, 100vw)' }"
+  >
+    <ng-template #header>
+      <div class="drawer-head">
+        <span class="p-drawer-title">{{ i18n.t('drawer.title') }}</span>
+        <app-print-button />
+      </div>
+    </ng-template>
+    <app-mortgage-form />
+  </p-drawer>
+
+  @if (!drawerOpen()) {
+    <p-button
+      styleClass="params-fab"
+      [rounded]="true"
+      [raised]="true"
+      icon="pi pi-sliders-h"
+      [label]="i18n.t('drawer.open')"
+      [attr.aria-expanded]="false"
+      (onClick)="drawerOpen.set(true)"
+    />
+  }
+}
+
+<app-formula-popover />

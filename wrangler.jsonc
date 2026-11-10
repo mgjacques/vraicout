@@ -1,0 +1,15 @@
+// Worker Cloudflare qui sert le build statique d'Angular, sans code serveur.
+// Build : `npm run build` (avec PRIME_LICENSE en variable de build). Déploiement : `npx wrangler deploy`.
+{
+  "name": "vraicout",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist/vraicout/browser",
+    // Chaque adresse de l'app a son fichier HTML (scripts/site-files.mjs) : /frais/methode sert
+    // frais/methode.html. Toute autre adresse sert 404.html, l'app elle-même, avec un statut 404.
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+  // Exigé par Cloudflare pour bâtir les branches autres que master (aperçus de PR).
+  "previews": {}
+}

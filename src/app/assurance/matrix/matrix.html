@@ -1,0 +1,144 @@
+<section class="block">
+  <p class="kicker">{{ i18n.t('section.matrix') }}</p>
+  <h2>{{ i18n.t('matrix.heading') }}</h2>
+  <p class="help">{{ i18n.t('matrix.intro') }}</p>
+
+  @if (!wide()) {
+    <p class="help">{{ i18n.t('matrix.openHint') }}</p>
+    <p-accordion
+      class="matrix-years"
+      [multiple]="true"
+      [value]="open()"
+      (valueChange)="setOpen($event)"
+    >
+      @for (row of store.projection().years; track row.month) {
+        <p-accordion-panel [value]="row.month" [class.milestone]="isMilestone(row)">
+          <p-accordion-header>
+            <span class="year-head">
+              <span class="year-title">
+                {{ i18n.t('matrix.when', { age: row.age, year: row.calendarYear }) }}
+                @if (isMilestone(row)) {
+                  <span class="pill">{{ i18n.t('matrix.milestone') }}</span>
+                }
+              </span>
+              @let lines = summary(row);
+              <span class="year-summary">{{ lines.keep }}</span>
+              <span class="year-summary">{{ lines.term }}</span>
+            </span>
+          </p-accordion-header>
+          <p-accordion-content>
+            @if (open().includes(row.month)) {
+              @let keep = strategy(row.strategies, 'keep');
+              @let term = strategy(row.strategies, 'termInvest');
+              <div class="year-cols">
+                <div>
+                  <h4>{{ i18n.t('matrix.keep') }}</h4>
+                  <dl>
+                    <dt>{{ i18n.t('matrix.cost') }}</dt>
+                    <dd><app-figure [money]="keep.cost" /></dd>
+                    <dt>{{ i18n.t('matrix.death') }}</dt>
+                    <dd><app-figure [money]="keep.deathBenefit" /></dd>
+                    @if (keep.deathBenefitProjected; as projected) {
+                      <dt class="minor">{{ i18n.t('matrix.deathProjected') }}</dt>
+                      <dd class="minor"><app-figure [money]="projected" /></dd>
+                    }
+                    <dt>{{ i18n.t('matrix.cashProjected') }}</dt>
+                    <dd><app-figure [money]="keep.alive" /></dd>
+                    @if (keep.aliveGuaranteed; as guaranteed) {
+                      <dt class="minor">{{ i18n.t('matrix.cashGuaranteed') }}</dt>
+                      <dd class="minor"><app-figure [money]="guaranteed" /></dd>
+                    }
+                    @if (keep.gapSavings; as savings) {
+                      <dt>{{ i18n.t('matrix.savings') }}</dt>
+                      <dd><app-figure [money]="savings" /></dd>
+                    }
+                    @if (showExtra()) {
+                      <dt>{{ i18n.t('matrix.extra') }}</dt>
+                      <dd><app-figure [money]="keep.extraSavings" /></dd>
+                    }
+                  </dl>
+                </div>
+                <div>
+                  <h4>{{ i18n.t('matrix.term') }}</h4>
+                  <dl>
+                    <dt>{{ i18n.t('matrix.cost') }}</dt>
+                    <dd><app-figure [money]="term.cost" /></dd>
+                    <dt>{{ i18n.t('matrix.death') }}</dt>
+                    <dd><app-figure [money]="term.deathBenefit" /></dd>
+                    <dt>{{ i18n.t('matrix.savings') }}</dt>
+                    <dd><app-figure [money]="term.alive" /></dd>
+                    @if (showExtra()) {
+                      <dt>{{ i18n.t('matrix.extra') }}</dt>
+                      <dd><app-figure [money]="term.extraSavings" /></dd>
+                    }
+                  </dl>
+                </div>
+              </div>
+            }
+          </p-accordion-content>
+        </p-accordion-panel>
+      }
+    </p-accordion>
+  } @else {
+    <div class="matrix-table">
+      <p-table [value]="store.projection().years" [rowHover]="true">
+        <ng-template #header>
+          <tr>
+            <th rowspan="2">{{ i18n.t('matrix.age') }}</th>
+            <th class="group keep" [attr.colspan]="keepColumns()">{{ i18n.t('matrix.keep') }}</th>
+            <th class="group term" colspan="3">{{ i18n.t('matrix.term') }}</th>
+            @if (showExtra()) {
+              <th rowspan="2">{{ i18n.t('matrix.extra') }}</th>
+            }
+          </tr>
+          <tr>
+            <th>{{ i18n.t('matrix.cost') }}</th>
+            <th>{{ i18n.t('matrix.death') }}</th>
+            <th>{{ i18n.t('matrix.cashProjected') }}</th>
+            @if (keepInvests()) {
+              <th>{{ i18n.t('matrix.savings') }}</th>
+            }
+            <th class="split">{{ i18n.t('matrix.cost') }}</th>
+            <th>{{ i18n.t('matrix.death') }}</th>
+            <th>{{ i18n.t('matrix.savings') }}</th>
+          </tr>
+        </ng-template>
+        <ng-template #body let-row>
+          @let keep = strategy(row.strategies, 'keep');
+          @let term = strategy(row.strategies, 'termInvest');
+          <tr [class.milestone]="isMilestone(row)">
+            <td class="age">
+              {{ row.age }}<span class="minor">{{ row.calendarYear }}</span>
+            </td>
+            <td><app-figure [money]="keep.cost" /></td>
+            <td>
+              <app-figure [money]="keep.deathBenefit" />
+              @if (keep.deathBenefitProjected; as projected) {
+                <span class="minor"
+                  >{{ i18n.t('matrix.projected') }} <app-figure [money]="projected"
+                /></span>
+              }
+            </td>
+            <td>
+              <app-figure [money]="keep.alive" />
+              @if (keep.aliveGuaranteed; as guaranteed) {
+                <span class="minor"
+                  >{{ i18n.t('matrix.guaranteed') }} <app-figure [money]="guaranteed"
+                /></span>
+              }
+            </td>
+            @if (keep.gapSavings; as savings) {
+              <td><app-figure [money]="savings" /></td>
+            }
+            <td class="split"><app-figure [money]="term.cost" /></td>
+            <td><app-figure [money]="term.deathBenefit" /></td>
+            <td><app-figure [money]="term.alive" /></td>
+            @if (showExtra()) {
+              <td><app-figure [money]="term.extraSavings" /></td>
+            }
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  }
+</section>

@@ -1,0 +1,83 @@
+<p-drawer
+  styleClass="mobile-menu"
+  [visible]="visible()"
+  (visibleChange)="visible.set($event)"
+  position="right"
+  [ariaCloseLabel]="i18n.t('shell.menuClose')"
+  [blockScroll]="true"
+  [style]="{ width: 'min(20rem, 85vw)' }"
+>
+  <ng-template #header>
+    <div class="mobile-menu-head">
+      <h2 class="visually-hidden">{{ i18n.t('shell.menuTitle') }}</h2>
+      <app-support-link />
+      <app-theme-toggle />
+    </div>
+  </ng-template>
+
+  <nav class="mobile-menu-tools" [attr.aria-label]="i18n.t('shell.nav')">
+    <ul>
+      <li>
+        <a
+          routerLink="/"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          ariaCurrentWhenActive="page"
+          (click)="visible.set(false)"
+        >
+          <i class="pi pi-th-large" aria-hidden="true"></i>
+          {{ i18n.t('shell.navHome') }}
+        </a>
+      </li>
+    </ul>
+    @for (group of groups; track group.theme) {
+      <h3 class="mobile-menu-group" [id]="'menu-' + group.anchor">{{ i18n.t(group.label) }}</h3>
+      <ul [attr.aria-labelledby]="'menu-' + group.anchor">
+        @for (tool of group.tools; track tool.path) {
+          <li>
+            <a
+              [routerLink]="tool.path"
+              routerLinkActive="active"
+              ariaCurrentWhenActive="page"
+              (click)="visible.set(false)"
+            >
+              <i class="pi {{ tool.icon }}" aria-hidden="true"></i>
+              {{ i18n.t(tool.short) }}
+            </a>
+          </li>
+        }
+      </ul>
+    }
+    <ul>
+      <li>
+        <a
+          routerLink="/ressources"
+          routerLinkActive="active"
+          ariaCurrentWhenActive="page"
+          (click)="visible.set(false)"
+        >
+          <i class="pi pi-book" aria-hidden="true"></i>
+          {{ i18n.t('shell.navResources') }}
+        </a>
+      </li>
+      <li>
+        <a [href]="'/#' + aboutAnchor" (click)="goToAbout($event)">
+          <i class="pi pi-info-circle" aria-hidden="true"></i>
+          {{ i18n.t('shell.navAbout') }}
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <a class="mobile-menu-transfer" routerLink="/donnees" (click)="visible.set(false)">
+    <i class="pi pi-arrow-right-arrow-left" aria-hidden="true"></i> {{ i18n.t('data.transfer') }}
+  </a>
+  <button type="button" class="mobile-menu-clear" (click)="askClear()">
+    <i class="pi pi-trash" aria-hidden="true"></i> {{ i18n.t('data.clear') }}
+  </button>
+</p-drawer>
+
+<!-- Loaded on first use: the dialog stays out of every page's initial download. -->
+@defer (when confirming(); prefetch on idle) {
+  <app-clear-data-dialog [(visible)]="confirming" />
+}

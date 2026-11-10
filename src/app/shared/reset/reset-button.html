@@ -1,0 +1,39 @@
+<p-button
+  class="scenario-reset"
+  [label]="i18n.t('reset.label')"
+  [text]="true"
+  icon="pi pi-refresh"
+  (onClick)="confirming.set(true)"
+/>
+
+<!-- Loaded on first use: the dialog stays out of the page's initial download. -->
+@defer (when confirming(); prefetch on idle) {
+  <p-dialog
+    class="reset-dialog"
+    appendTo="body"
+    [visible]="confirming()"
+    (visibleChange)="confirming.set($event)"
+    [modal]="true"
+    [dismissableMask]="true"
+    [draggable]="false"
+    [resizable]="false"
+    [header]="i18n.t('reset.title')"
+    [style]="{ width: 'min(30rem, calc(100vw - 2rem))' }"
+  >
+    <p>{{ i18n.t(effect()) }}</p>
+    <ng-template #footer>
+      <p-button
+        [label]="i18n.t('reset.cancel')"
+        severity="secondary"
+        [text]="true"
+        (onClick)="confirming.set(false)"
+      />
+      <p-button
+        [label]="i18n.t('reset.label')"
+        icon="pi pi-refresh"
+        severity="danger"
+        (onClick)="confirm()"
+      />
+    </ng-template>
+  </p-dialog>
+}

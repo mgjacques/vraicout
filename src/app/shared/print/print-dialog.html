@@ -1,0 +1,47 @@
+<p-dialog
+  class="print-dialog"
+  [visible]="printer.dialogOpen()"
+  (visibleChange)="printer.dialogOpen.set($event)"
+  [modal]="true"
+  [dismissableMask]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [header]="i18n.t('print.dialog.title')"
+  [style]="{ width: 'min(28rem, calc(100vw - 2rem))' }"
+>
+  <p class="print-help">{{ i18n.t('print.dialog.help') }}</p>
+  <ul class="print-choices">
+    @for (section of printer.sections(); track section.id) {
+      <li>
+        <p-checkbox
+          [inputId]="'print-' + section.id"
+          [binary]="true"
+          [ngModel]="!omit().includes(section.id)"
+          (ngModelChange)="set(section.id, $event)"
+        />
+        <label [for]="'print-' + section.id">{{ i18n.t(section.label) }}</label>
+      </li>
+    }
+  </ul>
+  <button type="button" class="link-button" (click)="toggleAll()">
+    {{ i18n.t(allTicked() ? 'print.dialog.none' : 'print.dialog.all') }}
+  </button>
+  <p class="print-always">
+    <i class="pi pi-info-circle" aria-hidden="true"></i>
+    <span>{{ i18n.t('print.dialog.always') }}</span>
+  </p>
+  <ng-template #footer>
+    <p-button
+      [label]="i18n.t('print.dialog.cancel')"
+      severity="secondary"
+      [text]="true"
+      (onClick)="printer.dialogOpen.set(false)"
+    />
+    <p-button
+      [label]="i18n.t('print.dialog.confirm')"
+      icon="pi pi-print"
+      [disabled]="noneTicked()"
+      (onClick)="print()"
+    />
+  </ng-template>
+</p-dialog>

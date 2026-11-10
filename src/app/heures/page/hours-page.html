@@ -1,0 +1,193 @@
+<div class="wrap">
+  <header class="mast">
+    <app-tool-breadcrumb tool="/heures" />
+    <h1>{{ i18n.t('hours.title') }}</h1>
+    <p class="lede">{{ i18n.t('hours.lede') }}</p>
+    <app-tool-links method="/heures/methode" />
+  </header>
+
+  <section class="block hours-form">
+    <h2>{{ i18n.t('hours.form.heading') }}</h2>
+    @if (store.missing().length) {
+      <p-message severity="error" class="hours-incomplete">{{
+        i18n.t('hours.form.incomplete', { fields: missingLabel() })
+      }}</p-message>
+    }
+
+    <div class="hours-pay">
+      <div class="group">
+        <label class="field" for="hours-frequency">{{ i18n.t('hours.form.frequency') }}</label>
+        <p-select
+          inputId="hours-frequency"
+          [options]="frequencyOptions()"
+          optionLabel="label"
+          optionValue="value"
+          [ngModel]="form().frequency"
+          (ngModelChange)="setFrequency($event)"
+          appendTo="body"
+        />
+
+        <label class="field" for="hours-salary"
+          >{{ i18n.t('hours.form.salary') }}<app-required-mark
+        /></label>
+        <app-money-input
+          inputId="hours-salary"
+          [ngModel]="form().salary"
+          (ngModelChange)="setSalary($event)"
+          [min]="0"
+          [max]="payMax(form().frequency)"
+          [invalid]="invalid('salary')"
+          [maxFractionDigits]="2"
+        />
+        <p class="help"><app-rich-text [text]="i18n.t('hours.form.salaryHelp')" /></p>
+      </div>
+
+      <div class="group">
+        <label class="field" for="hours-per-week"
+          >{{ i18n.t('hours.form.hoursPerWeek') }}<app-required-mark
+        /></label>
+        <app-number-input
+          inputId="hours-per-week"
+          [ngModel]="form().hoursPerWeek"
+          (ngModelChange)="setHoursPerWeek($event)"
+          [min]="limits.hoursPerWeek.min"
+          [max]="limits.hoursPerWeek.max"
+          [invalid]="invalid('hoursPerWeek')"
+          [maxFractionDigits]="2"
+          [suffix]="hoursSuffix()"
+        />
+        <p class="help">{{ i18n.t('hours.form.hoursPerWeekHelp') }}</p>
+
+        <label class="field" for="hours-work-costs">{{ i18n.t('hours.form.workCosts') }}</label>
+        <app-money-input
+          inputId="hours-work-costs"
+          [ngModel]="form().workCosts"
+          (ngModelChange)="setWorkCosts($event)"
+          [min]="limits.workCosts.min"
+          [max]="limits.workCosts.max"
+          [invalid]="invalid('workCosts')"
+          [maxFractionDigits]="2"
+        />
+        <p class="help">{{ i18n.t('hours.form.workCostsHelp') }}</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="block hours-row">
+    <div class="hours-side">
+      <fieldset class="group hours-purchase">
+        <legend>{{ i18n.t('hours.form.purchase') }}</legend>
+        <label class="field" for="hours-price"
+          >{{ i18n.t('hours.form.price') }}<app-required-mark
+        /></label>
+        <app-money-input
+          inputId="hours-price"
+          [ngModel]="form().price"
+          (ngModelChange)="setPrice($event)"
+          [min]="limits.price.min"
+          [max]="limits.price.max"
+          [invalid]="invalid('price')"
+          [maxFractionDigits]="2"
+        />
+
+        <label class="field" for="hours-recurrence">{{ i18n.t('hours.form.recurrence') }}</label>
+        <p-select
+          inputId="hours-recurrence"
+          [options]="recurrenceOptions()"
+          optionLabel="label"
+          optionValue="value"
+          [ngModel]="form().recurrence"
+          (ngModelChange)="setRecurrence($event)"
+          appendTo="body"
+        />
+
+        <div class="switch-row">
+          <p-toggleswitch
+            inputId="hours-add-tax"
+            [ngModel]="form().addTax"
+            (ngModelChange)="setAddTax($event)"
+          />
+          <label for="hours-add-tax">{{ i18n.t('hours.form.addTax') }}</label>
+        </div>
+        <p class="help">{{ i18n.t('hours.form.addTaxHelp') }}</p>
+      </fieldset>
+
+      <app-reset-button effect="hours.reset.effect" (confirmed)="store.reset()" />
+    </div>
+
+    <section class="hours-result" aria-live="polite">
+      <p class="kicker">{{ i18n.t('hours.result.kicker') }}</p>
+      <app-stale-results [stale]="store.missing().length > 0">
+        @if (result(); as work) {
+          <article class="card hours-card">
+            <div class="metric">
+              <p class="lab">{{ i18n.t(resultLabel()) }}</p>
+              <p class="hours-big"><app-figure [money]="work.hours" unit="hours" /></p>
+              <p class="hours-line">
+                <span>{{ i18n.t('hours.result.days') }}</span>
+                <app-figure [money]="work.days" unit="days" />
+              </p>
+            </div>
+            @if (work.perYear; as year) {
+              <div class="metric">
+                <p class="lab">{{ i18n.t('hours.result.perYear') }}</p>
+                <p class="hours-line">
+                  <span>{{ i18n.t('hours.result.hoursLine') }}</span>
+                  <app-figure [money]="year.hours" unit="hours" />
+                </p>
+                <p class="hours-line">
+                  <span>{{ i18n.t('hours.result.days') }}</span>
+                  <app-figure [money]="year.days" unit="days" />
+                </p>
+              </div>
+            }
+            <div class="metric">
+              <p class="hours-line">
+                <span>{{ i18n.t('hours.result.price') }}</span>
+                <app-figure [money]="work.price" [exact]="true" />
+              </p>
+              <p class="hours-line">
+                <span>{{ i18n.t('hours.result.annual') }}</span>
+                <app-figure [money]="work.annual" />
+              </p>
+              @if (work.kept; as kept) {
+                <p class="hours-line">
+                  <span>{{ i18n.t('hours.result.kept') }}</span>
+                  <app-figure [money]="kept" />
+                </p>
+              }
+              <p class="hours-line hours-hourly">
+                <span>{{
+                  i18n.t(work.kept ? 'hours.result.hourlyKept' : 'hours.result.hourly')
+                }}</span>
+                <app-figure [money]="work.hourly" [exact]="true" />
+              </p>
+            </div>
+          </article>
+        }
+      </app-stale-results>
+    </section>
+  </div>
+
+  <section class="block">
+    <p class="kicker">{{ i18n.t('hours.learn.kicker') }}</p>
+    <h2>{{ i18n.t('hours.learn.heading') }}</h2>
+    <div class="lessons">
+      @for (lesson of lessons; track lesson.title) {
+        <article>
+          <h3>{{ i18n.t(lesson.title) }}</h3>
+          <p>{{ i18n.t(lesson.body) }}</p>
+        </article>
+      }
+    </div>
+    <p class="print-omit">
+      <a class="method-link" routerLink="/heures/methode">{{ i18n.t('method.link') }}</a>
+    </p>
+  </section>
+
+  <app-page-notes>
+    <p>{{ i18n.t('app.footer') }}</p>
+  </app-page-notes>
+</div>
+
+<app-formula-popover />
