@@ -1,11 +1,10 @@
 import { money } from '../../shared/engine/formulas';
+import { clamp, finite } from '../../shared/engine/limits';
 import { discountFactor, presentValueFactor } from '../../shared/engine/inflation';
 import { Account, FormulaStep, Money } from '../../shared/engine/money';
 import { toMonthlyRate } from '../../shared/engine/rates';
 import { afterTax, rrspGrossUp } from '../../shared/engine/tax';
 import { FeesInput, FeesProjection, FeesYearRow, PortfolioId, PortfolioResult } from './types';
-
-export const PORTFOLIO_IDS: readonly PortfolioId[] = ['a', 'b'];
 
 const ACCOUNTS: readonly Account[] = ['tfsa', 'rrsp', 'taxable'];
 
@@ -381,12 +380,4 @@ function sanitize(input: FeesInput): FeesInput {
       years: Math.round(clamp(finite(input.drawdown.years, 25), 1, 50)),
     },
   };
-}
-
-function finite(value: number, fallback: number): number {
-  return Number.isFinite(value) ? value : fallback;
-}
-
-function clamp(value: number, min: number, max: number): number {
-  return Math.min(max, Math.max(min, value));
 }

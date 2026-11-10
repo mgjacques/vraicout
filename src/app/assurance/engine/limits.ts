@@ -15,6 +15,9 @@ export const INSURANCE_LIMITS = {
   extraSavings: { min: 0, max: 20_000 },
   taxPercent: { min: 0, max: 60 },
   inflationPercent: { min: 0, max: 10 },
+  /** The return slider; the engine accepts up to 15 % for the even-return search. */
+  returnPercent: { min: 0, max: 10 },
+  reinvestPercent: { min: 0, max: 100 },
 } satisfies Record<string, Limit>;
 
 /**

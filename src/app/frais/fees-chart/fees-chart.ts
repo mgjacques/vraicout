@@ -93,7 +93,6 @@ export class FeesChart {
 
   readonly options = computed<ChartOptions>(() => {
     this.theme.dark();
-    const projection = this.store.projection();
     const ink = cssColor('--ink', '#1c2421');
     const muted = cssColor('--muted', '#5c675f');
     const line = cssColor('--line', '#e2dbd0');

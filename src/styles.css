@@ -1235,10 +1235,6 @@ app-matrix {
   z-index: 30;
 }
 
-.drawer-intro {
-  margin-top: 0;
-  color: var(--muted);
-}
 .group {
   margin-top: 1.4rem;
 }

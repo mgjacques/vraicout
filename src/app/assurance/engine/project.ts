@@ -1,6 +1,7 @@
 import { Anchor, interpolate } from './interpolate';
 import { INSURANCE_LIMITS } from './limits';
 import { money } from '../../shared/engine/formulas';
+import { clamp, finite } from '../../shared/engine/limits';
 import { discountFactor, presentValueFactor } from '../../shared/engine/inflation';
 import { toMonthlyRate } from '../../shared/engine/rates';
 import { afterTax, rrspGrossUp } from '../../shared/engine/tax';
@@ -26,7 +27,6 @@ import {
 } from './types';
 
 const TERM_DURATIONS: readonly TermDuration[] = [10, 20, 25, 30];
-const STRATEGY_IDS: readonly StrategyId[] = ['keep', 'termInvest'];
 
 /**
  * One invested amount, by month: balance, what the person put in, what reached the
@@ -746,16 +746,6 @@ function line(
   return { id, chart, dashed, points: years.map(read) };
 }
 
-function finite(value: number, fallback: number): number {
-  return Number.isFinite(value) ? value : fallback;
-}
-
 function nonNegative(value: number): number {
   return Number.isFinite(value) ? Math.max(0, value) : 0;
 }
-
-function clamp(value: number, min: number, max: number): number {
-  return Math.min(max, Math.max(min, value));
-}
-
-export const STRATEGIES = STRATEGY_IDS;

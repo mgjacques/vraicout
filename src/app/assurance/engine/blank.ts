@@ -158,10 +158,6 @@ export function missingFields(form: ScenarioForm): RequiredField[] {
   return missing;
 }
 
-export function profileReady(form: ScenarioForm): boolean {
-  return missingFields(form).length === 0;
-}
-
 export function toScenarioInput(form: ScenarioForm): ScenarioInput {
   return {
     profile: {

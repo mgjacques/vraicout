@@ -13,7 +13,7 @@ import { PersonId } from '../engine/types';
 import { MortgageStore } from '../state/mortgage.store';
 import { personName } from '../person-name';
 import { NumberInput } from '../../shared/number-input/number-input';
-import { clampTo, Limit } from '../../shared/engine/limits';
+import { cents, fromPercent, whole } from '../../shared/engine/limits';
 import { MORTGAGE_LIMITS as L } from '../engine/limits';
 import { RequiredMark } from '../../shared/required-mark/required-mark';
 
@@ -91,19 +91,15 @@ export class MortgageForm {
   }
 
   setLoanAmount(value: number | null): void {
-    this.edit((draft) => (draft.loan.amount = dollars(value, L.loanAmount)));
+    this.edit((draft) => (draft.loan.amount = whole(value, L.loanAmount)));
   }
 
   setLoanYears(value: number | null): void {
-    this.edit((draft) => (draft.loan.years = wholeYears(value)));
+    this.edit((draft) => (draft.loan.years = whole(value, L.years)));
   }
 
   setLoanRate(value: number | null): void {
-    this.edit(
-      (draft) =>
-        (draft.loan.rate =
-          value === null ? null : Math.round(clampTo(value, L.ratePercent) * 100) / 10_000),
-    );
+    this.edit((draft) => (draft.loan.rate = fromPercent(value, L.ratePercent)));
   }
 
   setCouple(value: boolean): void {
@@ -127,11 +123,11 @@ export class MortgageForm {
   }
 
   setTermAmount(id: PersonId, value: number | null): void {
-    this.edit((draft) => (draft.people[id].amount = dollars(value, L.termAmount)));
+    this.edit((draft) => (draft.people[id].amount = whole(value, L.termAmount)));
   }
 
   setTermYears(id: PersonId, value: number | null): void {
-    this.edit((draft) => (draft.people[id].years = wholeYears(value)));
+    this.edit((draft) => (draft.people[id].years = whole(value, L.years)));
   }
 
   setTermPremium(id: PersonId, value: number | null): void {
@@ -174,16 +170,4 @@ export function fieldLabel(i18n: I18nService, field: MortgageField, form: Form):
   if (!form.couple) return i18n.t(label.alone);
   const id: PersonId = n === '1' ? 'p1' : 'p2';
   return i18n.t(label.of, { name: personName(i18n, form.people[id].label, id) });
-}
-
-function dollars(value: number | null, limit: Limit): number | null {
-  return value === null ? null : clampTo(Math.round(value), limit);
-}
-
-function cents(value: number | null, limit: Limit): number | null {
-  return value === null ? null : clampTo(Math.round(value * 100) / 100, limit);
-}
-
-function wholeYears(value: number | null): number | null {
-  return value === null ? null : clampTo(Math.round(value), L.years);
 }

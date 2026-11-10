@@ -4,7 +4,7 @@ import { RouterLink } from '@angular/router';
 import { Message } from 'primeng/message';
 import { Select } from 'primeng/select';
 import { ToggleSwitch } from 'primeng/toggleswitch';
-import { clampTo, Limit } from '../../shared/engine/limits';
+import { cents, clampTo } from '../../shared/engine/limits';
 import { FREQUENCIES, Frequency, payMax, withFrequency } from '../../shared/engine/pay';
 import { Figure } from '../../shared/figure/figure';
 import { FormulaPopover } from '../../shared/figure/formula-popover';
@@ -132,7 +132,3 @@ const LESSONS: readonly Lesson[] = [
   { title: 'hours.learn.costs.title', body: 'hours.learn.costs.body' },
   { title: 'hours.learn.limits.title', body: 'hours.learn.limits.body' },
 ];
-
-function cents(value: number | null, limit: Limit): number | null {
-  return value === null ? null : clampTo(Math.round(value * 100) / 100, limit);
-}

@@ -9,7 +9,7 @@ Un outil touche une trentaine de fichiers (l'outil « heures » : 31). Les oubli
 
 L'outil le plus proche sert de modèle ; le lire avant d'écrire :
 
-- **Une seule page**, formulaire et résultats côte à côte : `heures/` (le plus récent) ou `partage/`.
+- **Une seule page**, formulaire et résultats côte à côte : `impot/` (le plus récent), `heures/` ou `partage/`.
 - **Un parcours** (introduction, étapes, résultats, gardes de route) : `frais/` ou `hypotheque/`.
 
 ## 1. Cadrer avant de coder
@@ -53,7 +53,7 @@ Copier `heures/state/hours.store.ts` : `draft` (le formulaire tel que tapé) et 
 - `src/app/app.routes.ts` : une entrée `loadChildren` avant `confidentialite`.
 - `src/app/shared/seo/pages.ts` : chaque adresse de l'outil dans `SITE_PAGES`, avec le même titre que sa route. L'accueil de l'outil et sa page `/methode` ont une `description` (elles vont dans le sitemap) et l'accueil un `shareTitle` (`tool.<préfixe>.title`) ; les pages qui dépendent des chiffres entrés (profil, comparaison) n'en ont pas. Un test refuse une route absente de la liste.
 - Les composants partagés, sans réinventer :
-  - les champs `app-money-input` (dollars) et `app-number-input` (%, ans, heures), avec les bornes lues dans `limits.ts` ;
+  - les champs `app-money-input` (dollars) et `app-number-input` (%, ans, heures), avec les bornes lues dans `limits.ts` ; les setters arrondissent et bornent avec `cents`, `whole` et `fromPercent` (`shared/engine/limits.ts`), sans en écrire de copie locale ;
   - `app-figure` et `app-formula-popover` pour chaque montant, cliquable vers sa formule ;
   - `app-rich-text` pour tout texte qui contient `**` ou `*` ;
   - `app-warning` (`variant` `insurance` ou `investing`) si l'outil touche l'assurance ou les placements ;

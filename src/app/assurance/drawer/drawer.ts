@@ -29,7 +29,7 @@ import { MessageKey } from '../../shared/i18n/fr';
 import { ResetButton } from '../../shared/reset/reset-button';
 import { ScenarioStore } from '../state/scenario.store';
 import { NumberInput } from '../../shared/number-input/number-input';
-import { clampTo, Limit } from '../../shared/engine/limits';
+import { cents, clamp, clampTo, fromPercent, whole } from '../../shared/engine/limits';
 import { INSURANCE_LIMITS as L, RETURN_MARKERS } from '../engine/limits';
 import { RequiredMark } from '../../shared/required-mark/required-mark';
 
@@ -218,7 +218,7 @@ export class Drawer {
 
   setAge(value: number | null): void {
     this.edit((draft) => {
-      draft.profile.currentAge = value === null ? null : clampTo(Math.round(value), L.age);
+      draft.profile.currentAge = whole(value, L.age);
     });
   }
 
@@ -281,13 +281,13 @@ export class Drawer {
 
   setHorizon(value: number | null): void {
     this.edit((draft) => {
-      draft.profile.horizonAge = value === null ? null : clampTo(Math.round(value), L.horizonAge);
+      draft.profile.horizonAge = whole(value, L.horizonAge);
     });
   }
 
   setPremium(value: number | null): void {
     this.edit((draft) => {
-      draft.permanent.premium = value === null ? null : cents(value, L.premium);
+      draft.permanent.premium = cents(value, L.premium);
     });
   }
 
@@ -299,7 +299,7 @@ export class Drawer {
 
   setFace(value: number | null): void {
     this.edit((draft) => {
-      draft.permanent.deathBenefit = value === null ? null : cents(value, L.deathBenefit);
+      draft.permanent.deathBenefit = cents(value, L.deathBenefit);
     });
   }
 
@@ -311,26 +311,25 @@ export class Drawer {
 
   setCash(value: number | null): void {
     this.edit((draft) => {
-      draft.permanent.cashValueNow = value === null ? null : cents(value, L.cashValue);
+      draft.permanent.cashValueNow = cents(value, L.cashValue);
     });
   }
 
   setPremiumYears(value: number | null): void {
     this.edit((draft) => {
-      draft.permanent.premiumYearsRemaining =
-        value === null ? null : clampTo(Math.round(value), L.premiumYears);
+      draft.permanent.premiumYearsRemaining = whole(value, L.premiumYears);
     });
   }
 
   setGrowth(value: number | null): void {
     this.edit((draft) => {
-      draft.permanent.projectedGrowth = fromPercent(value, L.growthPercent);
+      draft.permanent.projectedGrowth = fromPercent(value ?? 0, L.growthPercent);
     });
   }
 
   setTermPremium(value: number | null): void {
     this.edit((draft) => {
-      draft.term.premium = value === null ? null : cents(value, L.premium);
+      draft.term.premium = cents(value, L.premium);
     });
   }
 
@@ -342,7 +341,7 @@ export class Drawer {
 
   setTermFace(value: number | null): void {
     this.edit((draft) => {
-      draft.term.deathBenefit = value === null ? null : cents(value, L.deathBenefit);
+      draft.term.deathBenefit = cents(value, L.deathBenefit);
     });
   }
 
@@ -354,19 +353,19 @@ export class Drawer {
 
   setReturn(value: number | null): void {
     this.edit((draft) => {
-      draft.params.annualReturn = clamp(roundPercent(value ?? 0) / 100, 0, 0.1);
+      draft.params.annualReturn = fromPercent(value ?? 0, L.returnPercent);
     });
   }
 
   setReinvest(value: number | null): void {
     this.edit((draft) => {
-      draft.params.reinvestShare = clamp(roundPercent(value ?? 0) / 100, 0, 1);
+      draft.params.reinvestShare = fromPercent(value ?? 0, L.reinvestPercent);
     });
   }
 
   setExtra(value: number | null): void {
     this.edit((draft) => {
-      draft.params.extraSavingsMonthly = cents(value, L.extraSavings);
+      draft.params.extraSavingsMonthly = cents(value ?? 0, L.extraSavings);
     });
   }
 
@@ -379,7 +378,7 @@ export class Drawer {
   setTaxRate(value: number | null): void {
     this.edit((draft) => {
       const previous = draft.params.taxRate;
-      draft.params.taxRate = fromPercent(value, L.taxPercent);
+      draft.params.taxRate = fromPercent(value ?? 0, L.taxPercent);
       // Until the person sets a different withdrawal rate, it follows today's rate.
       if (draft.params.taxRateLater === previous) draft.params.taxRateLater = draft.params.taxRate;
     });
@@ -393,13 +392,13 @@ export class Drawer {
 
   setInflation(value: number | null): void {
     this.edit((draft) => {
-      draft.params.inflation = fromPercent(value, L.inflationPercent);
+      draft.params.inflation = fromPercent(value ?? 0, L.inflationPercent);
     });
   }
 
   setTaxRateLater(value: number | null): void {
     this.edit((draft) => {
-      draft.params.taxRateLater = fromPercent(value, L.taxPercent);
+      draft.params.taxRateLater = fromPercent(value ?? 0, L.taxPercent);
     });
   }
 
@@ -417,14 +416,14 @@ export class Drawer {
   setAnchorGuaranteed(index: number, value: number | null): void {
     this.edit((draft) => {
       const anchor = draft.permanent.anchors[index];
-      if (anchor) anchor.guaranteed = value === null ? null : cents(value, L.cashValue);
+      if (anchor) anchor.guaranteed = cents(value, L.cashValue);
     });
   }
 
   setAnchorProjected(index: number, value: number | null): void {
     this.edit((draft) => {
       const anchor = draft.permanent.anchors[index];
-      if (anchor) anchor.projected = value === null ? null : cents(value, L.cashValue);
+      if (anchor) anchor.projected = cents(value, L.cashValue);
     });
   }
 
@@ -554,19 +553,6 @@ const DURATION_KEY: Record<TermDuration, MessageKey> = {
   30: 'drawer.duration.30',
 };
 
-function cents(value: number | null, limit: Limit): number {
-  return clampTo(Math.round((value ?? 0) * 100) / 100, limit);
-}
-
-/** A typed percent, bounded, as a rate: 2,5 gives 0,025. An emptied field counts as 0. */
-function fromPercent(value: number | null, limit: Limit): number {
-  return clampTo(roundPercent(value ?? 0), limit) / 100;
-}
-
 function roundPercent(value: number): number {
   return Math.round(value * 100) / 100;
-}
-
-function clamp(value: number, min: number, max: number): number {
-  return Math.min(max, Math.max(min, value));
 }

@@ -328,8 +328,8 @@
       class="risk-slider"
       [ngModel]="returnPercent()"
       (ngModelChange)="setReturn($event)"
-      [min]="0"
-      [max]="10"
+      [min]="limits.returnPercent.min"
+      [max]="limits.returnPercent.max"
       [step]="0.1"
       ariaLabelledBy="return"
     />
@@ -357,8 +357,8 @@
     <p-slider
       [ngModel]="reinvestPercent()"
       (ngModelChange)="setReinvest($event)"
-      [min]="0"
-      [max]="100"
+      [min]="limits.reinvestPercent.min"
+      [max]="limits.reinvestPercent.max"
       [step]="5"
       ariaLabelledBy="reinvest"
     />

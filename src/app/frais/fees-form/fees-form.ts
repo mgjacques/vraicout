@@ -15,7 +15,7 @@ import { FeesField, FeesForm as Form } from '../engine/blank';
 import { PortfolioId } from '../engine/types';
 import { FeesStore } from '../state/fees.store';
 import { NumberInput } from '../../shared/number-input/number-input';
-import { clampTo, Limit } from '../../shared/engine/limits';
+import { cents, clampTo, fromPercent, toPercent } from '../../shared/engine/limits';
 import { FEES_LIMITS as L } from '../engine/limits';
 import { RequiredMark } from '../../shared/required-mark/required-mark';
 
@@ -197,15 +197,3 @@ const ACCOUNT_HELP: Record<Account, MessageKey> = {
   rrsp: 'drawer.accountHelp.rrsp',
   taxable: 'drawer.accountHelp.taxable',
 };
-
-function toPercent(value: number | null): number | null {
-  return value === null ? null : Math.round(value * 10_000) / 100;
-}
-
-function fromPercent(value: number | null, limit: Limit): number | null {
-  return value === null ? null : Math.round(clampTo(value, limit) * 100) / 10_000;
-}
-
-function cents(value: number | null, limit: Limit): number | null {
-  return value === null ? null : clampTo(Math.round(value * 100) / 100, limit);
-}

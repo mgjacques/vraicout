@@ -571,7 +571,6 @@ export const assurance = {
   'matrix.openHint': 'Ouvrez une année pour voir tous les montants.',
   'matrix.age': 'Âge',
   'matrix.when': '{age} ans · {year}',
-  'matrix.year': 'Année',
   'matrix.keep': 'La permanente',
   'matrix.term': 'Temporaire + différence placée',
   'matrix.cost': 'Primes payées',

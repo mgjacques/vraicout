@@ -5,7 +5,7 @@ import { Message } from 'primeng/message';
 import { Select } from 'primeng/select';
 import { ToggleSwitch } from 'primeng/toggleswitch';
 import { formatCount, formatPercent } from '../../shared/engine/formulas';
-import { clampTo, Limit } from '../../shared/engine/limits';
+import { cents, fromPercent, toPercent, whole } from '../../shared/engine/limits';
 import { Figure } from '../../shared/figure/figure';
 import { FormulaPopover } from '../../shared/figure/formula-popover';
 import { MessageKey } from '../../shared/i18n/fr';
@@ -136,19 +136,3 @@ const LESSONS: readonly Lesson[] = [
   { title: 'spending.learn.opportunity.title', body: 'spending.learn.opportunity.body' },
   { title: 'spending.learn.limits.title', body: 'spending.learn.limits.body' },
 ];
-
-function toPercent(value: number | null): number | null {
-  return value === null ? null : Math.round(value * 10_000) / 100;
-}
-
-function fromPercent(value: number | null, limit: Limit): number | null {
-  return value === null ? null : Math.round(clampTo(value, limit) * 100) / 10_000;
-}
-
-function cents(value: number | null, limit: Limit): number | null {
-  return value === null ? null : clampTo(Math.round(value * 100) / 100, limit);
-}
-
-function whole(value: number | null, limit: Limit): number | null {
-  return value === null ? null : clampTo(Math.round(value), limit);
-}

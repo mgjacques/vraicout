@@ -10,7 +10,7 @@ Chaque champ numérique a un minimum et un maximum. Le but est d'empêcher des p
 - **Un champ vidé reste vide.** Il ne devient pas 0 ; le formulaire le signale comme manquant, comme avant.
 - **Les chiffres déjà sauvegardés ne sont pas corrigés.** Une valeur gardée sur l'appareil au-dessus d'un nouveau plafond reste telle quelle jusqu'à ce qu'on touche au champ.
 
-Le champ (`NumberField`, dans `src/app/shared/number-input/`) applique les bornes ; le setter du formulaire les applique aussi, pour qu'aucune autre voie ne les contourne.
+Le champ (`NumberField`, dans `src/app/shared/number-input/`) applique les bornes ; le setter du formulaire les applique aussi, pour qu'aucune autre voie ne les contourne. Les setters arrondissent et bornent avec les mêmes fonctions dans chaque outil : `cents`, `whole` et `fromPercent`, dans `src/app/shared/engine/limits.ts`.
 
 ## Fichiers
 
@@ -35,8 +35,8 @@ Le champ (`NumberField`, dans `src/app/shared/number-input/`) applique les borne
 | Épargne supplémentaire                          | 0 à 20 000 $ par mois                       |                                                                                                    |
 | Taux d'imposition, aujourd'hui et au retrait    | 0 à 60 % (36 % par défaut)                  | Au-dessus du taux marginal le plus élevé au Québec, avec de la marge.                              |
 | Inflation                                       | 0 à 10 % (2 % par défaut)                   |                                                                                                    |
-| Rendement (curseur)                             | 0 à 10 %, par pas de 0,1 (3,2 % par défaut) | Le moteur accepte jusqu'à 15 %. Repères 2,4, 3,2 et 6,5 % (`RETURN_MARKERS`).                      |
-| Part de la différence placée (curseur)          | 0 à 100 %                                   |                                                                                                    |
+| Rendement (curseur)                             | 0 à 10 %, par pas de 0,1 (3,2 % par défaut) | Le moteur accepte jusqu'à 15 % (`returnPercent`). Repères 2,4, 3,2 et 6,5 % (`RETURN_MARKERS`).    |
+| Part de la différence placée (curseur)          | 0 à 100 %, par pas de 5 (`reinvestPercent`) |                                                                                                    |
 | Durée de la temporaire (choix)                  | 10, 20, 25 ou 30 ans (20 par défaut)        |                                                                                                    |
 
 ### Frais de gestion (`frais/engine/limits.ts`)

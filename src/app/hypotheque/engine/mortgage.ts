@@ -1,5 +1,5 @@
 import { money } from '../../shared/engine/formulas';
-import { Money } from '../../shared/engine/money';
+import { clamp, finite } from '../../shared/engine/limits';
 import {
   DeathOutcome,
   MortgageInput,
@@ -215,12 +215,4 @@ function sanitize(input: MortgageInput): MortgageInput {
     people: { p1: policy(input.people.p1), p2: policy(input.people.p2) },
     bankPremium: Math.max(0, finite(input.bankPremium, 0)),
   };
-}
-
-function finite(value: number, fallback: number): number {
-  return Number.isFinite(value) ? value : fallback;
-}
-
-function clamp(value: number, min: number, max: number): number {
-  return Math.min(max, Math.max(min, value));
 }

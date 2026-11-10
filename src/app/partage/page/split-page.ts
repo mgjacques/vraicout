@@ -16,7 +16,7 @@ import { RichText } from '../../shared/rich-text/rich-text';
 import { ResetButton } from '../../shared/reset/reset-button';
 import { SplitField, SplitForm } from '../engine/blank';
 import { SPLIT_LIMITS as L } from '../engine/limits';
-import { clampTo, Limit } from '../../shared/engine/limits';
+import { cents } from '../../shared/engine/limits';
 import { FREQUENCIES, Frequency, payMax, withFrequency } from '../../shared/engine/pay';
 import { PersonId } from '../engine/types';
 import { SplitStore } from '../state/split.store';
@@ -132,8 +132,4 @@ const LESSONS: readonly Lesson[] = [
 
 function person(field: SplitField): PersonId {
   return field === 'salary1' ? 'p1' : 'p2';
-}
-
-function cents(value: number | null, limit: Limit): number | null {
-  return value === null ? null : clampTo(Math.round(value * 100) / 100, limit);
 }

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Message } from 'primeng/message';
-import { clampTo, Limit } from '../../shared/engine/limits';
+import { whole } from '../../shared/engine/limits';
 import { formatMoney } from '../../shared/engine/formulas';
 import { Figure } from '../../shared/figure/figure';
 import { FormulaPopover } from '../../shared/figure/formula-popover';
@@ -73,11 +73,11 @@ export class MarginalPage {
   }
 
   setIncome(value: number | null): void {
-    this.edit((draft) => (draft.income = dollars(value, L.income)));
+    this.edit((draft) => (draft.income = whole(value, L.income)));
   }
 
   setExtra(value: number | null): void {
-    this.edit((draft) => (draft.extra = dollars(value, L.extra)));
+    this.edit((draft) => (draft.extra = whole(value, L.extra)));
   }
 
   private edit(change: (draft: MarginalForm) => unknown): void {
@@ -92,7 +92,3 @@ const LESSONS: readonly Lesson[] = [
   { title: 'marginal.learn.use.title', body: 'marginal.learn.use.body' },
   { title: 'marginal.learn.limits.title', body: 'marginal.learn.limits.body' },
 ];
-
-function dollars(value: number | null, limit: Limit): number | null {
-  return value === null ? null : clampTo(Math.round(value), limit);
-}
