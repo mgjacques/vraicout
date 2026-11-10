@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      @font-face {
+        font-family: Inter;
+        src: url(../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2)
+          format('woff2');
+        font-weight: 100 900;
+      }
+      * {
+        margin: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+      }
+      body {
+        font-family: Inter, sans-serif;
+        background: #f3efe6;
+        color: #1c2421;
+        padding: 72px 80px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        font-size: 40px;
+        font-weight: 750;
+        letter-spacing: -0.02em;
+      }
+      .brand svg {
+        width: 64px;
+        height: 64px;
+      }
+      h1 {
+        font-size: 84px;
+        font-weight: 780;
+        letter-spacing: -0.035em;
+        line-height: 1.02;
+        max-width: 900px;
+      }
+      p {
+        font-size: 32px;
+        color: #5c675f;
+        line-height: 1.35;
+        max-width: 820px;
+        margin-top: 26px;
+      }
+      .foot {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        font-size: 26px;
+        color: #5c675f;
+        font-weight: 550;
+      }
+      .foot strong {
+        color: #1c2421;
+        font-weight: 700;
+      }
+      .bar {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 14px;
+        display: flex;
+      }
+      .bar i {
+        flex: 1;
+      }
+      .bar i:first-child {
+        background: #9a3412;
+      }
+      .bar i:last-child {
+        background: #00846f;
+        flex: 0.45;
+      }
+      .tag {
+        position: absolute;
+        right: 70px;
+        top: 150px;
+        width: 300px;
+        height: 300px;
+        opacity: 0.11;
+      }
+    </style>
+  </head>
+  <body>
+    <svg class="tag" viewBox="0 0 24 24">
+      <path
+        fill="#9a3412"
+        fill-rule="evenodd"
+        d="M2.6 10.8 7.4 4.9Q8 4 9.2 4H14V20H9.2Q8 20 7.4 19.1L2.6 13.2Q1.8 12 2.6 10.8ZM9.9 12A1.8 1.8 0 1 0 6.3 12 1.8 1.8 0 1 0 9.9 12Z"
+      />
+      <path fill="#00846f" d="M14 4H20Q22 4 22 6V18Q22 20 20 20H14Z" />
+    </svg>
+    <div class="brand">
+      <svg viewBox="0 0 24 24">
+        <path
+          fill="#9a3412"
+          fill-rule="evenodd"
+          d="M2.6 10.8 7.4 4.9Q8 4 9.2 4H14V20H9.2Q8 20 7.4 19.1L2.6 13.2Q1.8 12 2.6 10.8ZM9.9 12A1.8 1.8 0 1 0 6.3 12 1.8 1.8 0 1 0 9.9 12Z"
+        />
+        <path fill="#00846f" d="M14 4H20Q22 4 22 6V18Q22 20 20 20H14Z" />
+      </svg>
+      VraiCoût
+    </div>
+    <div>
+      <h1>Combien ça coûte, pour&nbsp;vrai&nbsp;?</h1>
+      <p>Entrez vos chiffres et voyez ce que ça coûte, aujourd’hui et avec les&nbsp;années.</p>
+    </div>
+    <div class="foot">
+      <span>Gratuit · sans inscription · vos chiffres restent chez vous</span
+      ><strong>vraicout.ca</strong>
+    </div>
+    <div class="bar"><i></i><i></i></div>
+  </body>
+</html>
