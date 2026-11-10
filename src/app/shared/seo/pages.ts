@@ -90,7 +90,7 @@ export const SITE_PAGES: readonly SitePage[] = [
 
   { path: '/sources', title: 'method.title', description: 'method.index.lede' },
   { path: '/ressources', title: 'resources.title', description: 'resources.lede' },
-  { path: '/confidentialite', title: 'title.privacy', description: 'privacy.brief.local' },
+  { path: '/confidentialite', title: 'title.privacy', description: 'privacy.description' },
   { path: '/donnees', title: 'title.transfer', description: 'transfer.lede' },
 
   // Addresses from before the tools were split: the router redirects them.

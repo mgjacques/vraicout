@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { I18nService } from '../shared/i18n/i18n.service';
 import { DocSection, DocSections, docText as text } from '../shared/doc-sections/doc-sections';
 
-/** /confidentialite: what the app keeps, what it sends, and whom to ask (Québec's Law 25). */
+/** /confidentialite: the privacy policy Québec's Law 25 asks for, on the plan of the CAI guide. */
 @Component({
   selector: 'app-privacy-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -16,65 +16,55 @@ export class PrivacyPage {
 
 const SECTIONS: readonly DocSection[] = [
   {
-    id: 'en-bref',
-    title: 'privacy.brief.title',
+    id: 'renseignements',
+    title: 'privacy.collected.title',
     pieces: [
+      text('privacy.collected.intro'),
       {
         kind: 'list',
-        items: ['privacy.brief.account', 'privacy.brief.local', 'privacy.brief.audience'],
+        items: [
+          'privacy.collected.email',
+          'privacy.collected.technical',
+          'privacy.collected.analytics',
+        ],
       },
+      text('privacy.collected.profiling'),
     ],
   },
   {
     id: 'appareil',
     title: 'privacy.device.title',
-    pieces: [
-      text('privacy.device.intro'),
-      {
-        kind: 'list',
-        items: [
-          'privacy.device.tools',
-          'privacy.device.names',
-          'privacy.device.theme',
-          'privacy.device.access',
-        ],
-      },
-      text('privacy.device.erase'),
-      text('privacy.device.transfer'),
-    ],
+    pieces: [text('privacy.device.body'), text('privacy.device.erase')],
   },
+  { id: 'refus', title: 'privacy.refuse.title', pieces: [text('privacy.refuse.body')] },
   {
-    id: 'audience',
-    title: 'privacy.audience.title',
+    id: 'tiers',
+    title: 'privacy.sharing.title',
     pieces: [
-      text('privacy.audience.what'),
-      text('privacy.audience.counts'),
-      text('privacy.audience.never'),
-    ],
-  },
-  {
-    id: 'hebergement',
-    title: 'privacy.hosting.title',
-    pieces: [
-      text('privacy.hosting.body'),
+      text('privacy.sharing.access'),
+      text('privacy.sharing.cloudflare'),
       {
         kind: 'link',
-        text: 'privacy.hosting.link',
+        text: 'privacy.sharing.link',
         url: 'https://www.cloudflare.com/privacypolicy/',
       },
     ],
   },
-  { id: 'liens', title: 'privacy.links.title', pieces: [text('privacy.links.body')] },
-  { id: 'courriel', title: 'privacy.contact.title', pieces: [text('privacy.contact.body')] },
+  {
+    id: 'conservation',
+    title: 'privacy.retention.title',
+    pieces: [text('privacy.retention.body')],
+  },
   {
     id: 'responsable',
     title: 'privacy.officer.title',
     pieces: [
       text('privacy.officer.who'),
-      text('privacy.officer.rights'),
       { kind: 'mail' },
+      text('privacy.officer.delay'),
       text('privacy.officer.complaint'),
       { kind: 'link', text: 'privacy.officer.link', url: 'https://www.cai.gouv.qc.ca' },
     ],
   },
+  { id: 'modifications', title: 'privacy.changes.title', pieces: [text('privacy.changes.body')] },
 ];
