@@ -32,6 +32,10 @@ Sur toute autre branche, `NOINDEX` (`shared/seo/site.ts`) est vrai : chaque page
 - `sitemap.xml` (les pages qui ont une description), `robots.txt` et `site.webmanifest` ;
 - `_headers` : les en-têtes de sécurité (dont la politique de sécurité du contenu, avec l'empreinte de chaque script en ligne de `index.html`) et la mise en cache longue des fichiers dont le nom porte une empreinte.
 
+## Statistiques de visite
+
+La politique de sécurité du contenu n'autorise qu'une adresse externe : Cloudflare Web Analytics, son script (`static.cloudflareinsights.com`) et l'adresse où il envoie le décompte des visites (`cloudflareinsights.com`). Il ne voit aucun chiffre entré dans les outils. La page de confidentialité le décrit (`privacy.collected.analytics`, dans `shared/i18n/fr/privacy.ts`) : changer d'outil de statistiques, ou en ajouter un, change cette page et `scripts/site-files.mjs` dans le même changement.
+
 Le domaine est dans `shared/seo/site.ts` (`SITE_URL`).
 
 `ng serve` ne passe pas par ce script : en local, toutes les adresses servent le même `index.html`, et l'app met ses métas à jour en naviguant.

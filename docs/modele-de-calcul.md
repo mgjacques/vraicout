@@ -47,7 +47,6 @@ Conséquences :
 - Une police déjà libérée (0 année de primes) ne crée pas d'argent fictif : c'est l'option permanente qui place la prime de la temporaire.
 - Une permanente pas encore achetée (une illustration qu'on vous propose, `permanent.inForce` faux) n'a rien de particulier : valeur de rachat de 0 aujourd'hui, toutes les années de primes à venir, et les lignes du tableau de l'illustration. Le formulaire masque alors le champ de la valeur de rachat d'aujourd'hui et l'envoie à 0.
 - Un contrat **déjà en vigueur** (`permanent.inForce` vrai) : l'option temporaire suppose qu'on y met fin aujourd'hui. Sa valeur de rachat (`assumptions.surrender`) est versée dans la poche de la temporaire au mois 0, comme un versement unique, avec le même compte et le même rendement que la différence placée. Les deux options partent donc du même montant : la valeur de rachat d'un côté, la même somme placée de l'autre (testé). Dans un REER, ce versement est majoré du remboursement d'impôt comme les autres.
-- Une sauvegarde d'avant cette question est lue « en vigueur » si elle a une valeur de rachat aujourd'hui : seul un contrat en vigueur en a une.
 - Après la fin des primes de la permanente, si la temporaire court encore, l'option permanente place la prime de la temporaire. C'est la poche « différence placée, côté permanente ».
 - Une fois les deux primes terminées, plus rien n'est versé ; les soldes continuent de fructifier.
 
@@ -163,7 +162,7 @@ Le moteur calcule deux totaux par option, chacun un `Money` avec sa phrase. Le r
 
 ## Repères et valeurs de départ
 
-- Curseur de rendement : repères à 2,4 % (court terme), 3,2 % (obligations) et 6,5 % (actions), d'après les normes d'hypothèses de projection 2026 de l'IPF et de FP Canada, avant frais (`RETURN_MARKERS`, `engine/limits.ts`). Le rendement de départ est celui des obligations (`DEFAULT_RETURN`).
+- Curseur de rendement : repères à 2,4 % (court terme), 3,2 % (obligations) et 6,5 % (actions), d'après les normes d'hypothèses de projection 2026 de l'IQPF et de FP Canada, avant frais (`RETURN_MARKERS`, `engine/limits.ts`). Le rendement de départ est celui des obligations (`DEFAULT_RETURN`).
 - Taux d'imposition de départ : 36 %, le taux combiné fédéral et Québec de 2026 entre 58 523 $ et 108 680 $ de revenu imposable (`DEFAULT_TAX_RATE`).
 - Inflation de départ : 2 %, la cible de la Banque du Canada.
 

@@ -70,7 +70,7 @@ La valeur placée est le chiffre affiché sous « Coût d'opportunité ». Sous 
 - Aucun impôt ni frais sur le placement. Placé dans un CELI, il n'y aurait pas d'impôt ; ailleurs, il y en aurait.
 - La hausse des prix est la même chaque année et s'applique d'un coup au début de l'année.
 - Les montants ne sont pas ramenés en dollars d'aujourd'hui.
-- Une semaine de 52 semaines et une année de 365 jours ne tombent pas pile : « 1 fois par jour » donne 365 fois, « 7 fois par semaine » en donne 364.
+- Une année de 52 semaines et une de 365 jours ne tombent pas pile : « 1 fois par jour » donne 365 fois, « 7 fois par semaine » en donne 364.
 
 ## Page publique
 

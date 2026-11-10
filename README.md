@@ -24,14 +24,14 @@ Chaque montant affiche, au clic ou au survol, le calcul exact qui l'a produit.
 
 ## Démarrer
 
-Node.js 22.22.3 ou plus récent ; la version du projet est dans `.nvmrc`.
+Node.js 22.22.3 ou plus récent ; le projet utilise la version de `.nvmrc` (24).
 
 ```bash
 nvm use
 npm install
-npm start          # http://localhost:4200
-npm test           # tests Vitest
-npm run build      # sortie statique dans dist/vraicout/browser
+npm start                    # http://localhost:4200
+npx ng test --watch=false    # tests Vitest, une seule passe (npm test reste en mode surveillance)
+npm run build                # sortie statique dans dist/vraicout/browser
 ```
 
 Sans clé PrimeUI, PrimeNG affiche un bandeau de licence : c'est normal en local. Voir [Déploiement](docs/deploiement.md).
