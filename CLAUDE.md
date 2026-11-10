@@ -50,10 +50,10 @@ Pour un nouvel outil, suivre le skill `nouvel-outil` (`.claude/skills/nouvel-out
 1. `npx ng test --watch=false` passe.
 2. `npm run build` passe.
 3. Pour un changement visible, vérifier la page dans le navigateur, sur mobile comme sur grand écran.
-4. La doc touchée (modèle de calcul, limites, architecture, README) est à jour.
+4. La doc touchée (modèle de calcul, limites, architecture, déploiement, README) est à jour.
 
 ## Git
 
 - On travaille sur `develop` ; `master` est la branche principale.
 - Messages de commit en français, courts, qui disent le changement du point de vue de la personne qui utilise le site (« Partage des dépenses : la facture à côté du résultat »).
-- `ressources-contexte/`, `ideas/` (idées d'outils mises de côté), `.env`, `src/app/prime-license.ts` et `.claude/` (sauf `.claude/skills/`) sont ignorés par Git : ne jamais les ajouter. Les skills du projet, eux, sont suivis et se commitent avec le changement qui les touche.
+- `ressources-contexte/`, `ideas/` (idées d'outils mises de côté), `.env`, `src/app/prime-license.ts`, `src/app/shared/seo/build-branch.ts` et `.claude/` (sauf `.claude/skills/`) sont ignorés par Git : ne jamais les ajouter. Les skills du projet, eux, sont suivis et se commitent avec le changement qui les touche.

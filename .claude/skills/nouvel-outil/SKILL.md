@@ -85,7 +85,7 @@ Copier `heures/state/hours.store.ts` : `draft` (le formulaire tel que tapé) et 
 - `docs/limites-des-champs.md` : une section « Bornes par outil » pour `<outil>/engine/limits.ts`.
 - `docs/architecture.md` : l'arbre de `src/app/`, une section « Outil … (`<outil>/`) » et les lignes de ses tests dans le tableau « Tests ».
 - `docs/redaction.md` : le fichier de textes dans la liste, et le préfixe des clés.
-- `README.md` : la liste des outils en tête, le tableau « Organisation », la liste de la doc et le compte dans « État du projet ».
+- `README.md` : une ligne dans la liste des outils, et le lien vers le modèle de calcul dans « Documentation ».
 - `CLAUDE.md` : le nom du dossier dans la liste des outils.
 
 ## 8. Vérifier
