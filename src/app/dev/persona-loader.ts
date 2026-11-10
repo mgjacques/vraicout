@@ -1,8 +1,11 @@
 import { EnvironmentProviders, inject, provideAppInitializer } from '@angular/core';
 import { ScenarioStore } from '../assurance/state/scenario.store';
+import { SpendingStore } from '../depenses/state/spending.store';
+import { SavingsStore } from '../epargne/state/savings.store';
 import { FeesStore } from '../frais/state/fees.store';
 import { HoursStore } from '../heures/state/hours.store';
 import { MortgageStore } from '../hypotheque/state/mortgage.store';
+import { MarginalStore } from '../impot/state/marginal.store';
 import { SplitStore } from '../partage/state/split.store';
 import { PERSONAS, Persona } from './personas';
 
@@ -29,6 +32,9 @@ export function providePersonaLoader(): EnvironmentProviders {
       mortgage: inject(MortgageStore),
       split: inject(SplitStore),
       hours: inject(HoursStore),
+      spending: inject(SpendingStore),
+      savings: inject(SavingsStore),
+      marginal: inject(MarginalStore),
     });
     console.info(`Persona chargé : ${persona.name}`);
   });
@@ -40,6 +46,9 @@ interface Stores {
   mortgage: MortgageStore;
   split: SplitStore;
   hours: HoursStore;
+  spending: SpendingStore;
+  savings: SavingsStore;
+  marginal: MarginalStore;
 }
 
 /**
@@ -47,12 +56,8 @@ interface Stores {
  * nothing from a previous persona is left behind. A complete form opens on the results.
  */
 export function loadPersona(persona: Persona, stores: Stores): void {
-  const { insurance, fees, mortgage, split, hours } = stores;
-  insurance.reset();
-  fees.reset();
-  mortgage.reset();
-  split.reset();
-  hours.reset();
+  const { insurance, fees, mortgage, split, hours, spending, savings, marginal } = stores;
+  for (const store of Object.values(stores)) store.reset();
 
   if (persona.insurance) {
     insurance.draft.set(structuredClone(persona.insurance));
@@ -69,4 +74,7 @@ export function loadPersona(persona: Persona, stores: Stores): void {
   }
   if (persona.split) split.edit(structuredClone(persona.split));
   if (persona.hours) hours.edit(structuredClone(persona.hours));
+  if (persona.spending) spending.edit(structuredClone(persona.spending));
+  if (persona.savings) savings.edit(structuredClone(persona.savings));
+  if (persona.marginal) marginal.edit(structuredClone(persona.marginal));
 }

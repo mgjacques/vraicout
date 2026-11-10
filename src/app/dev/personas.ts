@@ -5,9 +5,12 @@
  */
 import { ScenarioForm, toForm } from '../assurance/engine/blank';
 import { ScenarioInput, ValueAnchor } from '../assurance/engine/types';
+import { SpendingForm } from '../depenses/engine/blank';
+import { SavingsForm } from '../epargne/engine/blank';
 import { FeesForm } from '../frais/engine/blank';
 import { WorkForm } from '../heures/engine/blank';
 import { MortgageForm } from '../hypotheque/engine/blank';
+import { MarginalForm } from '../impot/engine/blank';
 import { SplitForm } from '../partage/engine/blank';
 
 export interface Persona {
@@ -17,6 +20,9 @@ export interface Persona {
   mortgage?: MortgageForm;
   split?: SplitForm;
   hours?: WorkForm;
+  spending?: SpendingForm;
+  savings?: SavingsForm;
+  marginal?: MarginalForm;
 }
 
 const row = (age: number, guaranteed: number | null, projected: number | null): ValueAnchor => ({
@@ -79,6 +85,32 @@ function fees(form: Partial<FeesForm> & Pick<FeesForm, 'portfolios'>): FeesForm 
   };
 }
 
+function spending(form: Partial<SpendingForm> & Pick<SpendingForm, 'amount'>): SpendingForm {
+  return {
+    count: 1,
+    cadence: 'perWeek',
+    years: 10,
+    annualReturn: 0.07,
+    priceGrowth: false,
+    inflation: 0.02,
+    ...form,
+  };
+}
+
+function savings(form: Partial<SavingsForm>): SavingsForm {
+  return {
+    initial: null,
+    monthly: null,
+    depositYears: null,
+    growthYears: null,
+    annualReturn: 0.06,
+    delayYears: null,
+    realDollars: false,
+    inflation: 0.02,
+    ...form,
+  };
+}
+
 const alex = insurance({
   age: 36,
   permanent: { premium: 140, deathBenefit: 150_000 },
@@ -119,6 +151,8 @@ export const PERSONAS: Record<string, Persona> = {
       recurrence: 'month',
       addTax: false,
     },
+    spending: spending({ amount: 4.75, count: 5, cadence: 'perWeek' }),
+    marginal: { income: 72_000, extra: 3_000 },
   },
   'karim-sophie': {
     name: 'Karim et Sophie, 34 et 33 ans',
@@ -126,7 +160,7 @@ export const PERSONAS: Record<string, Persona> = {
       age: 34,
       permanent: { premium: 210, deathBenefit: 250_000, premiumYearsRemaining: 20 },
       term: { premium: 35, deathBenefit: 500_000, durationYears: 30 },
-      params: { account: 'rrsp', taxRate: 0.41, taxRateLater: 0.32 },
+      params: { account: 'rrsp', taxRate: 0.36, taxRateLater: 0.26 },
     }),
     mortgage: {
       loan: { amount: 420_000, years: 25, rate: 0.0449 },
@@ -180,6 +214,8 @@ export const PERSONAS: Record<string, Persona> = {
       recurrence: 'once',
       addTax: true,
     },
+    spending: spending({ amount: 65, count: 6, cadence: 'everyWeeks', years: 15 }),
+    savings: savings({ monthly: 100, depositYears: 17, annualReturn: 0.05 }),
   },
   'jean-francois': {
     name: 'Jean-François, 52 ans',
@@ -204,8 +240,8 @@ export const PERSONAS: Record<string, Persona> = {
       params: {
         annualReturn: 0.065,
         account: 'rrsp',
-        taxRate: 0.5,
-        taxRateLater: 0.4,
+        taxRate: 0.47,
+        taxRateLater: 0.36,
         realDollars: true,
         inflation: 0.025,
       },
@@ -215,14 +251,15 @@ export const PERSONAS: Record<string, Persona> = {
       monthlyContribution: 2_500,
       years: 13,
       account: 'taxable',
-      taxRate: 0.5,
-      taxRateLater: 0.4,
+      taxRate: 0.47,
+      taxRateLater: 0.36,
       drawdown: { enabled: true, years: 25 },
       portfolios: {
         a: { label: 'Avec conseiller', mer: 0.008, advisorFee: 0.01 },
         b: { label: 'FNB', mer: 0.002, advisorFee: 0 },
       },
     }),
+    marginal: { income: 160_000, extra: 40_000 },
   },
   lucie: {
     name: 'Lucie, 63 ans',
@@ -276,6 +313,14 @@ export const PERSONAS: Record<string, Persona> = {
       recurrence: 'once',
       addTax: true,
     },
+    spending: spending({ amount: 32, count: 2, cadence: 'perWeek', priceGrowth: true }),
+    savings: savings({
+      monthly: 50,
+      depositYears: 10,
+      growthYears: 32,
+      delayYears: 5,
+      realDollars: true,
+    }),
   },
   'nadia-elise': {
     name: 'Nadia et Élise, 45 et 47 ans',
@@ -288,7 +333,7 @@ export const PERSONAS: Record<string, Persona> = {
         projectedGrowth: 0.03,
       },
       term: { premium: 70, deathBenefit: 750_000, durationYears: 20 },
-      params: { account: 'taxable', taxRate: 0.53, taxRateLater: 0.53, realDollars: true },
+      params: { account: 'taxable', taxRate: 0.5, taxRateLater: 0.5, realDollars: true },
     }),
     mortgage: {
       loan: { amount: 650_000, years: 22, rate: 0.042 },
@@ -306,6 +351,7 @@ export const PERSONAS: Record<string, Persona> = {
       },
       bill: 4_800,
     },
+    marginal: { income: 210_000, extra: null },
   },
   robert: {
     name: 'Robert, 71 ans',
@@ -322,6 +368,8 @@ export const PERSONAS: Record<string, Persona> = {
       },
       term: { premium: 420, deathBenefit: 100_000, durationYears: 10 },
     }),
+    marginal: { income: 38_000, extra: 20_000 },
+    savings: savings({ initial: 92_000, depositYears: 1, growthYears: 14, annualReturn: 0.032 }),
   },
   alex: {
     name: 'Alex, 36 ans',
@@ -335,6 +383,7 @@ export const PERSONAS: Record<string, Persona> = {
       recurrence: 'once',
       addTax: false,
     },
+    marginal: { income: 58_000, extra: null },
   },
 };
 

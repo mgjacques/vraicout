@@ -2,7 +2,7 @@
 
 Des personnes fictives qui pourraient utiliser VraiCoût, avec des chiffres à entrer dans chaque outil. Elles servent à éprouver les outils sur des situations réalistes et à repérer ce qui casse, ce qui étonne ou ce qui est mal expliqué.
 
-Les primes, taux et salaires sont des ordres de grandeur plausibles pour le Québec en 2026, pas des soumissions réelles. Les taux marginaux sont approximatifs (fédéral et Québec combinés).
+Les primes, taux et salaires sont des ordres de grandeur plausibles pour le Québec en 2026, pas des soumissions réelles. Les taux marginaux (fédéral et Québec combinés) sont ceux que donne l'outil `/impot` avec les chiffres de 2026, arrondis à l'unité ; ce sont aussi les taux entrés dans l'assurance et les frais. Ils changent avec les tranches d'impôt : voir [Chiffres annuels](chiffres-annuels.md).
 
 Chaque persona a une section « Ce que ça éprouve » : c'est la raison pour laquelle elle existe.
 
@@ -20,7 +20,7 @@ Les chiffres sont dans `src/app/dev/personas.ts` : un changement ici se fait aus
 
 Infirmière à Montréal, célibataire, locataire. Une représentante lui a proposé une assurance vie entière « qui prend de la valeur ». Elle veut savoir si ça vaut mieux qu'une temporaire et placer la différence.
 
-- Salaire : 72 000 $ brut par an, payé aux deux semaines (net d'environ 1 900 $ par paie). Taux marginal : 37 %.
+- Salaire : 72 000 $ brut par an, payé aux deux semaines (net d'environ 1 900 $ par paie). Taux marginal : 36 % (36,12 %).
 - Épargne actuelle : 200 $ par mois dans un fonds commun de sa banque.
 
 **Assurance**
@@ -36,7 +36,11 @@ Infirmière à Montréal, célibataire, locataire. Une représentante lui a prop
 
 **Heures** : net 1 900 $ aux deux semaines, 37,5 h, frais de travail 120 $/mois (stationnement). Prix : paiement d'auto 450 $/mois.
 
-**Ce que ça éprouve** : le parcours le plus fréquent, proche de l'exemple de l'outil. Si les résultats ou les textes sont confus ici, ils le seront pour tout le monde.
+**Dépenses** : un café à 4,75 $, 5 fois par semaine, sur 10 ans, rendement 7 %, prix fixes.
+
+**Impôt** : revenu imposable 72 000 $, revenu de plus 3 000 $ (des heures supplémentaires).
+
+**Ce que ça éprouve** : le parcours le plus fréquent, proche de l'exemple de chaque outil, et un montant avec des cents dans les dépenses. Si les résultats ou les textes sont confus ici, ils le seront pour tout le monde.
 
 ---
 
@@ -57,7 +61,7 @@ Ils achètent un condo à Laval. La banque leur offre son assurance prêt ; un a
 
 **Partage** : Karim 88 000 $/an, Sophie 61 000 $/an (brut). Facture : 2 350 $ (hypothèque, taxes, électricité).
 
-**Assurance** (Karim, qui a reçu une proposition à part) : 34 ans, permanente 210 $/mois, capital 250 000 $, primes payables 20 ans, valeur de rachat 0 $. Temporaire 30 ans, 500 000 $, 35 $/mois. REER, taux 41 % maintenant et 32 % à la retraite.
+**Assurance** (Karim, qui a reçu une proposition à part) : 34 ans, permanente 210 $/mois, capital 250 000 $, primes payables 20 ans, valeur de rachat 0 $. Temporaire 30 ans, 500 000 $, 35 $/mois. REER, taux 36 % maintenant (36,12 % à 88 000 $) et 26 % à la retraite.
 
 **Ce que ça éprouve** : le mode couple de l'hypothèque, une temporaire qui finit pile avec le prêt, un partage autour de 59/41, et le REER avec deux taux différents.
 
@@ -67,7 +71,7 @@ Ils achètent un condo à Laval. La banque leur offre son assurance prêt ; un a
 
 Technicienne administrative à Sherbrooke, monoparentale, deux enfants. Elle a pris une vie entière il y a dix ans et se demande si elle devrait la garder ou passer à une temporaire avec plus de couverture pour ses enfants. Elle sait qu'elle ne placera pas toute la différence.
 
-- Salaire : 52 000 $ brut par an, payé deux fois par mois (net d'environ 1 650 $). Taux marginal : 32 %.
+- Salaire : 52 000 $ brut par an, payé deux fois par mois (net d'environ 1 650 $). Taux marginal : 26 % (25,69 %).
 
 **Assurance**
 | Champ | Valeur |
@@ -82,7 +86,11 @@ Technicienne administrative à Sherbrooke, monoparentale, deux enfants. Elle a p
 
 **Heures** : net 1 650 $ deux fois par mois, 35 h, frais de travail 450 $/mois (garderie et autobus). Prix : lunettes 389 $ avant taxes.
 
-**Ce que ça éprouve** : une valeur de rachat déjà là, des primes qui s'arrêtent avant la temporaire (le côté « garder » se met à placer la différence), une part réinvestie sous 100 %, une temporaire qui dure plus longtemps que le prêt, et des frais de travail qui pèsent lourd dans le taux horaire.
+**Dépenses** : la coiffure, 65 $ aux 6 semaines, sur 15 ans, rendement 7 %.
+
+**Épargne** : 100 $/mois pour les études des enfants, pendant 17 ans, rendement 5 %. Ni croissance après, ni départ retardé.
+
+**Ce que ça éprouve** : une valeur de rachat déjà là, des primes qui s'arrêtent avant la temporaire (le côté « garder » se met à placer la différence), une part réinvestie sous 100 %, une temporaire qui dure plus longtemps que le prêt, des frais de travail qui pèsent lourd dans le taux horaire, une fréquence « aux X semaines » qui ne tombe pas juste (8,67 fois par année), et une épargne sans croissance ni comparaison.
 
 ---
 
@@ -90,7 +98,7 @@ Technicienne administrative à Sherbrooke, monoparentale, deux enfants. Elle a p
 
 Entrepreneur à Québec, revenu élevé. Il paie depuis 12 ans une vie entière d'un million qu'un planificateur lui a vendue comme outil fiscal. Il se demande ce qu'il aurait s'il l'abandonnait aujourd'hui pour une temporaire.
 
-- Revenu : 160 000 $ par an. Taux marginal : 50 % aujourd'hui, 40 % à la retraite.
+- Revenu : 160 000 $ par an. Taux marginal : 47 % aujourd'hui (47,46 %), 36 % à la retraite.
 
 **Assurance**
 | Champ | Valeur |
@@ -99,11 +107,13 @@ Entrepreneur à Québec, revenu élevé. Il paie depuis 12 ans une vie entière 
 | Permanente | **17 000 $/an**, capital 1 000 000 $, valeur de rachat 140 000 $, primes payables 8 ans, croissance 2,5 % |
 | Tableau des valeurs | 60 : 260 000 $ / 330 000 $ · 75 : 480 000 $ / 690 000 $ · 90 : 720 000 $ / 1 200 000 $ |
 | Temporaire | 2 600 $/an, capital 1 000 000 $, 20 ans |
-| Paramètres | rendement 6,5 %, 100 %, **REER**, 50 % / 40 %, dollars d'aujourd'hui, inflation 2,5 % |
+| Paramètres | rendement 6,5 %, 100 %, **REER**, 47 % / 36 %, dollars d'aujourd'hui, inflation 2,5 % |
 
-**Frais** : 450 000 $ au départ, 2 500 $/mois, 13 ans, rendement 6 %. A : RFG 0,8 % + conseiller 1 %. B : FNB 0,2 %. Non enregistré. Décaissement sur 25 ans.
+**Frais** : 450 000 $ au départ, 2 500 $/mois, 13 ans, rendement 6 %. A : RFG 0,8 % + conseiller 1 %. B : FNB 0,2 %. Non enregistré, 47 % / 36 %. Décaissement sur 25 ans.
 
-**Ce que ça éprouve** : la périodicité annuelle, des montants dans les centaines de milliers, le REER à deux taux, les dollars d'aujourd'hui, le compte non enregistré et le décaissement.
+**Impôt** : revenu imposable 160 000 $, revenu de plus 40 000 $ (un contrat de plus).
+
+**Ce que ça éprouve** : la périodicité annuelle, des montants dans les centaines de milliers, le REER à deux taux, les dollars d'aujourd'hui, le compte non enregistré, le décaissement, et un revenu de plus qui franchit le seuil de 181 440 $ où le montant personnel fédéral commence à baisser.
 
 ---
 
@@ -111,7 +121,7 @@ Entrepreneur à Québec, revenu élevé. Il paie depuis 12 ans une vie entière 
 
 Retraitée à Trois-Rivières. Sa vie entière est payée depuis longtemps. Son neveu lui dit d'encaisser la valeur de rachat et de prendre une petite temporaire pour les funérailles.
 
-- Revenu de retraite : 42 000 $ par an. Taux marginal : 32 %.
+- Revenu de retraite : 42 000 $ par an. Taux marginal : 26 % (25,69 %).
 
 **Assurance**
 | Champ | Valeur |
@@ -132,7 +142,7 @@ Retraitée à Trois-Rivières. Sa vie entière est payée depuis longtemps. Son 
 
 Premier emploi dans un entrepôt à Gatineau, payé à la semaine. Un représentant rencontré à un souper de famille lui a proposé une vie entière « pour bloquer son assurabilité ». Il vit avec sa blonde Léa et veut aussi savoir combien d'heures lui coûte un téléphone.
 
-- Salaire : 22 $/h, 40 h/semaine (net d'environ 690 $ par semaine). Taux marginal : 27 %. Léa : 24 000 $ par an.
+- Salaire : 22 $/h, 40 h/semaine (net d'environ 690 $ par semaine). Taux marginal : 26 % (25,69 %). Léa : 24 000 $ par an.
 
 **Assurance**
 | Champ | Valeur |
@@ -147,7 +157,11 @@ Premier emploi dans un entrepôt à Gatineau, payé à la semaine. Un représent
 
 **Partage** : Thomas 690 $/semaine, Léa 24 000 $/an (fréquences différentes). Épicerie : 900 $.
 
-**Ce que ça éprouve** : un horizon très long, une temporaire de 30 ans, des primes à vie sans tableau de valeurs, la paie hebdomadaire, deux fréquences de paie dans le partage, et la taxe ajoutée.
+**Dépenses** : un repas livré à 32 $, 2 fois par semaine, sur 10 ans, rendement 7 %, prix qui suivent l'inflation (2 %).
+
+**Épargne** : 50 $/mois pendant 10 ans, puis 32 ans sans dépôt (jusqu'à 65 ans), rendement 6 %, comparé au même placement commencé 5 ans plus tard, en dollars d'aujourd'hui.
+
+**Ce que ça éprouve** : un horizon très long, une temporaire de 30 ans, des primes à vie sans tableau de valeurs, la paie hebdomadaire, deux fréquences de paie dans le partage, la taxe ajoutée, des prix qui montent avec l'inflation, et le coût d'attendre sur un petit montant avec beaucoup de temps devant.
 
 ---
 
@@ -155,7 +169,7 @@ Premier emploi dans un entrepôt à Gatineau, payé à la semaine. Un représent
 
 Couple à Montréal avec une maison chère. Nadia est médecin, Élise travaille à temps partiel. Leur conseiller propose à Nadia une vie entière participante « comme placement ».
 
-- Nadia : 210 000 $ par an. Élise : 35 000 $ par an.
+- Nadia : 210 000 $ par an, taux marginal 50 % (50,21 %). Élise : 35 000 $ par an.
 
 **Partage** : Nadia 210 000 $/an, Élise 35 000 $/an. Facture : 4 800 $.
 
@@ -168,9 +182,11 @@ Couple à Montréal avec une maison chère. Nadia est médecin, Élise travaille
 | Nadia | temporaire 700 000 $, 20 ans, 85 $/mois |
 | Élise | temporaire 300 000 $, **15 ans**, 48 $/mois |
 
-**Assurance** (Nadia) : 45 ans, permanente 900 $/mois, capital 500 000 $, primes payables 15 ans, valeur de rachat 0 $, croissance 3 %. Temporaire 20 ans, 750 000 $, 70 $/mois. Non enregistré, taux 53 %, dollars d'aujourd'hui.
+**Assurance** (Nadia) : 45 ans, permanente 900 $/mois, capital 500 000 $, primes payables 15 ans, valeur de rachat 0 $, croissance 3 %. Temporaire 20 ans, 750 000 $, 70 $/mois. Non enregistré, taux 50 %, dollars d'aujourd'hui.
 
-**Ce que ça éprouve** : un partage autour de 86/14, des temporaires qui finissent avant le prêt (trou de couverture et solde restant), des capitaux inégaux en couple, le compte non enregistré à taux élevé, et la croissance projetée la plus optimiste.
+**Impôt** (Nadia) : revenu imposable 210 000 $, revenu de plus laissé vide.
+
+**Ce que ça éprouve** : un partage autour de 86/14, un taux marginal dans la zone où le montant personnel fédéral baisse, un revenu de plus vide, des temporaires qui finissent avant le prêt (trou de couverture et solde restant), des capitaux inégaux en couple, le compte non enregistré à taux élevé, et la croissance projetée la plus optimiste.
 
 ---
 
@@ -178,7 +194,7 @@ Couple à Montréal avec une maison chère. Nadia est médecin, Élise travaille
 
 Veuf à Rimouski. Il paie encore une vie entière prise à 40 ans, à vie. Il veut savoir si continuer à payer a encore du sens à son âge.
 
-- Revenu de retraite : 38 000 $ par an. Taux marginal : 28 %.
+- Revenu de retraite : 38 000 $ par an. Taux marginal : 26 % (25,69 %).
 
 **Assurance**
 | Champ | Valeur |
@@ -189,7 +205,11 @@ Veuf à Rimouski. Il paie encore une vie entière prise à 40 ans, à vie. Il ve
 | Temporaire | 420 $/mois, capital 100 000 $, 10 ans |
 | Paramètres | rendement 3,2 %, 100 %, CELI |
 
-**Ce que ça éprouve** : un âge élevé, l'horizon maximal, une temporaire plus chère que la permanente, une valeur de rachat qui rejoint le capital, et un jalon de 65 ans déjà passé.
+**Impôt** : revenu imposable 38 000 $, revenu de plus 20 000 $ (un retrait de son FERR).
+
+**Épargne** : la valeur de rachat de 92 000 $ placée d'un coup, sans dépôt mensuel, 1 an de dépôts puis 14 ans de croissance, rendement 3,2 %.
+
+**Ce que ça éprouve** : un revenu de plus qui franchit le seuil de 54 345 $ du Québec, un montant de départ seul dans l'épargne, un âge élevé, l'horizon maximal, une temporaire plus chère que la permanente, une valeur de rachat qui rejoint le capital, et un jalon de 65 ans déjà passé.
 
 ---
 
@@ -201,22 +221,26 @@ Alex a reçu une soumission par courriel et veut une réponse rapide. Alex ne co
 
 **Heures** : salaire annuel 58 000 $, rien d'autre ; puis un prix de 0 $.
 
+**Impôt** : revenu imposable 58 000 $, revenu de plus laissé vide.
+
 **Ce que ça éprouve** : les valeurs par défaut, les champs laissés vides, l'absence de tableau des valeurs, et ce que l'interface dit (ou ne dit pas) quand il manque une donnée.
 
 ---
 
 ## Couverture
 
-| Persona | Assurance | Frais | Hypothèque | Partage | Heures |
-|---|:-:|:-:|:-:|:-:|:-:|
-| 1. Camille | ✓ | ✓ | | | ✓ |
-| 2. Karim et Sophie | ✓ | | ✓ couple | ✓ | |
-| 3. Marie-Ève | ✓ | | ✓ seule | | ✓ |
-| 4. Jean-François | ✓ | ✓ | | | |
-| 5. Lucie | ✓ | ✓ | | | |
-| 6. Thomas | ✓ | | | ✓ | ✓ |
-| 7. Nadia et Élise | ✓ | | ✓ couple | ✓ | |
-| 8. Robert | ✓ | | | | |
-| 9. Alex | ✓ | | | | ✓ |
+| Persona | Assurance | Frais | Hypothèque | Partage | Heures | Dépenses | Épargne | Impôt |
+|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| 1. Camille | ✓ | ✓ | | | ✓ | ✓ | | ✓ |
+| 2. Karim et Sophie | ✓ | | ✓ couple | ✓ | | | | |
+| 3. Marie-Ève | ✓ | | ✓ seule | | ✓ | ✓ | ✓ | |
+| 4. Jean-François | ✓ | ✓ | | | | | | ✓ |
+| 5. Lucie | ✓ | ✓ | | | | | | |
+| 6. Thomas | ✓ | | | ✓ | ✓ | ✓ | ✓ | |
+| 7. Nadia et Élise | ✓ | | ✓ couple | ✓ | | | | ✓ |
+| 8. Robert | ✓ | | | | | | ✓ | ✓ |
+| 9. Alex | ✓ | | | | ✓ | | | ✓ |
 
 Cas particuliers de l'assurance couverts : prime annuelle (4), permanente libérée (5), valeur de rachat existante (3, 4, 5, 8), part réinvestie sous 100 % (3), REER (2, 4), non enregistré (4, 7), dollars d'aujourd'hui (4, 7), temporaires de 10, 20, 25 et 30 ans, temporaire plus chère que la permanente (5, 8), aucun tableau de valeurs (6, 9).
+
+Cas particuliers des autres outils : dépenses avec des cents (1), « aux X semaines » (3), prix qui suivent l'inflation (6) ; épargne sans croissance ni comparaison (3), départ retardé en dollars d'aujourd'hui (6), montant de départ seul (8) ; impôt dans chaque palier, avec un revenu de plus qui franchit un seuil du Québec (8) ou le début de la baisse du montant personnel fédéral (4), dans cette zone (7) et sans revenu de plus (7, 9).
