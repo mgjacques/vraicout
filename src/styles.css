@@ -1501,6 +1501,18 @@ app-mortgage-form .p-inputtext {
   .params-fab.p-button .p-button-label {
     display: none;
   }
+  /* Icon only on a phone: a bigger target, easier to hit with a thumb. */
+  .params-fab.p-button {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+  .params-fab.p-button .p-button-icon {
+    font-size: 1.35rem;
+  }
+  /* Printing from a phone is rare; the button only crowds the drawer's header. */
+  app-print-button {
+    display: none;
+  }
 }
 
 /* Header shared by every tool. */

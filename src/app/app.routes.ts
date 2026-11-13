@@ -2,51 +2,71 @@ import { Injectable, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { RouterStateSnapshot, Routes, TitleStrategy } from '@angular/router';
 import { Home } from './home/home';
-import { MessageKey } from './shared/i18n/fr';
+import { ALL_TOOL_CATALOGS, withCatalogs } from './shared/i18n/catalogs';
+import type { MessageKey } from './shared/i18n/fr';
 import { I18nService } from './shared/i18n/i18n.service';
 import { documentTitle } from './shared/seo/pages';
 
 /**
- * One prefix per tool, each loaded on demand. Route titles are catalog keys,
+ * One prefix per tool, each loaded on demand with its texts. Route titles are catalog keys,
  * so the tab title follows the language.
  */
 export const routes: Routes = [
   { path: '', component: Home, title: 'title.home' satisfies MessageKey },
   {
     path: 'assurance',
-    loadChildren: () => import('./assurance/assurance.routes').then((m) => m.ASSURANCE_ROUTES),
+    loadChildren: withCatalogs(['assurance'], () =>
+      import('./assurance/assurance.routes').then((m) => m.ASSURANCE_ROUTES),
+    ),
   },
   {
     path: 'frais',
-    loadChildren: () => import('./frais/frais.routes').then((m) => m.FRAIS_ROUTES),
+    loadChildren: withCatalogs(['fees'], () =>
+      import('./frais/frais.routes').then((m) => m.FRAIS_ROUTES),
+    ),
   },
   {
     path: 'hypotheque',
-    loadChildren: () => import('./hypotheque/hypotheque.routes').then((m) => m.HYPOTHEQUE_ROUTES),
+    loadChildren: withCatalogs(['mortgage'], () =>
+      import('./hypotheque/hypotheque.routes').then((m) => m.HYPOTHEQUE_ROUTES),
+    ),
   },
   {
     path: 'partage',
-    loadChildren: () => import('./partage/partage.routes').then((m) => m.PARTAGE_ROUTES),
+    loadChildren: withCatalogs(['split'], () =>
+      import('./partage/partage.routes').then((m) => m.PARTAGE_ROUTES),
+    ),
   },
   {
     path: 'heures',
-    loadChildren: () => import('./heures/heures.routes').then((m) => m.HEURES_ROUTES),
+    loadChildren: withCatalogs(['hours'], () =>
+      import('./heures/heures.routes').then((m) => m.HEURES_ROUTES),
+    ),
   },
   {
     path: 'depenses',
-    loadChildren: () => import('./depenses/depenses.routes').then((m) => m.DEPENSES_ROUTES),
+    loadChildren: withCatalogs(['spending'], () =>
+      import('./depenses/depenses.routes').then((m) => m.DEPENSES_ROUTES),
+    ),
   },
   {
     path: 'epargne',
-    loadChildren: () => import('./epargne/epargne.routes').then((m) => m.EPARGNE_ROUTES),
+    loadChildren: withCatalogs(['savings'], () =>
+      import('./epargne/epargne.routes').then((m) => m.EPARGNE_ROUTES),
+    ),
   },
   {
     path: 'impot',
-    loadChildren: () => import('./impot/impot.routes').then((m) => m.IMPOT_ROUTES),
+    loadChildren: withCatalogs(['marginal'], () =>
+      import('./impot/impot.routes').then((m) => m.IMPOT_ROUTES),
+    ),
   },
   {
     path: 'sources',
-    loadComponent: () => import('./sources/sources-page').then((m) => m.SourcesPage),
+    // The sources page lists every tool's update date, from each tool's catalog.
+    loadComponent: withCatalogs(ALL_TOOL_CATALOGS, () =>
+      import('./sources/sources-page').then((m) => m.SourcesPage),
+    ),
     title: 'method.title' satisfies MessageKey,
   },
   {

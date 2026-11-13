@@ -107,7 +107,7 @@ export const resources = {
   'resources.revenuQuebec.about': 'Les règles fiscales et les crédits d’impôt du Québec.',
   'resources.cra.title': 'Agence du revenu du Canada',
   'resources.cra.about':
-    'La même chose au fédéral, avec les règles du CELI, du REER et du CELIAPP.',
+    'Les règles fiscales et les crédits d’impôt fédéraux, dont les règles du CELI, du REER et du CELIAPP.',
   'resources.epq.title': 'Épargne Placements Québec',
   'resources.epq.about': 'Une foire aux questions sur le CELIAPP.',
   'resources.acef.title': 'ACEF (associations coopératives d’économie familiale)',
